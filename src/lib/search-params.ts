@@ -1,4 +1,4 @@
-import { debounce, parseAsString, parseAsStringLiteral } from "nuqs";
+import { debounce, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs";
 
 /** URL state shared by client components (nuqs). Defaults are left out of the URL. */
 
@@ -19,3 +19,12 @@ export const TICKET_STATUSES = ["all", "unused", "admitted", "voided"] as const;
 
 /** `?status=` ticket filter. */
 export const ticketStatusParser = parseAsStringLiteral(TICKET_STATUSES).withDefault("all");
+
+/** `?page=` (1-based). Each change pushes history so Back returns to the previous page. */
+export const pageParser = parseAsInteger.withDefault(1).withOptions({ history: "push", scroll: false });
+
+export const EVENT_WHEN = ["upcoming", "past", "all"] as const;
+export type EventWhen = (typeof EVENT_WHEN)[number];
+
+/** `?when=` on the events list. */
+export const eventWhenParser = parseAsStringLiteral(EVENT_WHEN).withDefault("upcoming");

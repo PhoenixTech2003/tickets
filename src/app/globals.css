@@ -44,6 +44,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --animate-indeterminate: indeterminate 1.2s ease-in-out infinite;
+  --animate-drain: drain linear forwards;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -175,6 +177,26 @@
   }
   ::selection {
     background: color-mix(in oklch, var(--primary) 25%, transparent);
+  }
+}
+
+/* Sliding bar for work with no measurable progress yet. */
+@keyframes indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+/* Countdown bar that empties left to right; set animation-duration inline. */
+@keyframes drain {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
   }
 }
 

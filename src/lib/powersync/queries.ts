@@ -1,8 +1,10 @@
 "use client";
 
-import { and, asc, count, desc, eq, isNotNull, like, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, isNotNull, or, sql } from "drizzle-orm";
+import type { SQLiteColumn } from "drizzle-orm/sqlite-core";
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";
+import type { EventWhen } from "@/lib/search-params";
 import { useSession } from "./provider";
 import {
   entrances,
@@ -90,30 +92,46 @@ export function useBatches(eventId: string) {
 
 export type TicketFilter = "all" | "unused" | "admitted" | "voided";
 
-export function useTickets(eventId: string, opts: { search: string; filter: TicketFilter; limit: number }) {
-  const { db } = useSession();
+/** LIKE pattern matching `text` anywhere, with % and _ in the input taken literally. */
+const contains = (text: string) => `%${text.replace(/[\\%_]/g, "\\$&")}%`;
+const likeText = (column: SQLiteColumn, text: string) => sql`${column} like ${contains(text)} escape '\\'`;
+
+const firstRow = (rows: { total: number }[]) => Number(rows[0]?.total ?? 0);
+
+function ticketWhere(eventId: string, opts: { search: string; filter: TicketFilter }) {
   const status = {
     all: undefined,
     unused: sql`${tickets.redeemed_at} is null and ${tickets.voided} = 0`,
     admitted: isNotNull(tickets.redeemed_at),
     voided: eq(tickets.voided, 1),
   }[opts.filter];
-  return useQuery(
+  return and(
+    eq(tickets.event_id, eventId),
+    opts.search ? likeText(tickets.code, opts.search.toUpperCase()) : undefined,
+    status,
+  );
+}
+
+/** One page of an event's tickets plus the total matching the same filters. */
+export function useTickets(
+  eventId: string,
+  opts: { search: string; filter: TicketFilter; page: number; pageSize: number },
+) {
+  const { db } = useSession();
+  const where = ticketWhere(eventId, opts);
+  const rows = useQuery(
     toCompilableQuery(
       db
         .select()
         .from(tickets)
-        .where(
-          and(
-            eq(tickets.event_id, eventId),
-            opts.search ? like(tickets.code, `%${opts.search.toUpperCase()}%`) : undefined,
-            status,
-          ),
-        )
+        .where(where)
         .orderBy(desc(tickets.created_at), asc(tickets.code))
-        .limit(opts.limit),
+        .limit(opts.pageSize)
+        .offset((opts.page - 1) * opts.pageSize),
     ),
   );
+  const totals = useQuery(toCompilableQuery(db.select({ total: count() }).from(tickets).where(where)));
+  return { ...rows, total: firstRow(totals.data) };
 }
 
 export function useScanners(eventId: string) {
@@ -227,4 +245,53 @@ export function useEventValue(eventId: string) {
     ),
   );
   return { ...result, value: result.data[0] };
+}
+
+/**
+ * A page of events for the events list. "Upcoming" includes anything that
+ * ended less than six hours ago, soonest first; "past" is newest first.
+ */
+export function useEventsPage(opts: { search: string; when: EventWhen; page: number; pageSize: number; now: number }) {
+  const { db } = useSession();
+  const cutoff = new Date(opts.now - 6 * 3600_000).toISOString();
+  // julianday() parses both "YYYY-MM-DD HH:MM:SS" and ISO "T" timestamps, so
+  // the comparison doesn't depend on how PowerSync formatted the text.
+  const ends = sql`julianday(coalesce(${events.ends_at}, ${events.starts_at}))`;
+  const where = and(
+    opts.search ? or(likeText(events.name, opts.search), likeText(events.venue, opts.search)) : undefined,
+    opts.when === "upcoming" ? sql`${ends} >= julianday(${cutoff})` : undefined,
+    opts.when === "past" ? sql`${ends} < julianday(${cutoff})` : undefined,
+  );
+  const rows = useQuery(
+    toCompilableQuery(
+      db
+        .select()
+        .from(events)
+        .where(where)
+        .orderBy(opts.when === "upcoming" ? asc(events.starts_at) : desc(events.starts_at))
+        .limit(opts.pageSize)
+        .offset((opts.page - 1) * opts.pageSize),
+    ),
+  );
+  const totals = useQuery(toCompilableQuery(db.select({ total: count() }).from(events).where(where)));
+  return { ...rows, total: firstRow(totals.data) };
+}
+
+/** A page of an event's scans, newest first, optionally filtered by code. */
+export function useScansPage(eventId: string, opts: { search: string; page: number; pageSize: number }) {
+  const { db } = useSession();
+  const where = and(eq(scans.event_id, eventId), opts.search ? likeText(scans.code, opts.search.toUpperCase()) : undefined);
+  const rows = useQuery(
+    toCompilableQuery(
+      db
+        .select()
+        .from(scans)
+        .where(where)
+        .orderBy(desc(scans.scanned_at))
+        .limit(opts.pageSize)
+        .offset((opts.page - 1) * opts.pageSize),
+    ),
+  );
+  const totals = useQuery(toCompilableQuery(db.select({ total: count() }).from(scans).where(where)));
+  return { ...rows, total: firstRow(totals.data) };
 }

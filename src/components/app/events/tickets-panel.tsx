@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import { useQueryState } from "nuqs";
 import {
   BanIcon,
@@ -14,7 +14,9 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { Confirm } from "@/components/app/confirm";
+import { downloadWithProgress } from "@/components/app/download";
 import { EntranceSelect } from "@/components/app/entrance-select";
+import { Paginator, useClampPage } from "@/components/app/paginator";
 import { StickyToolbar } from "@/components/app/sticky-toolbar";
 import { MoneyInput, parseAmount } from "@/components/app/money-input";
 import { useAction } from "@/components/app/use-action";
@@ -46,16 +48,16 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { deleteTicketBatch, generateTickets, resetTicket, setTicketVoided } from "@/server/actions/tickets";
 import { useBatches, useEntrances, useEvent, useTickets } from "@/lib/powersync/queries";
 import { DEFAULT_CURRENCY, formatMoney } from "@/lib/money";
-import { searchParser, TICKET_STATUSES, ticketStatusParser } from "@/lib/search-params";
+import { pageParser, searchParser, TICKET_STATUSES, ticketStatusParser } from "@/lib/search-params";
 import type { BatchRow, EntranceRow, TicketRow } from "@/lib/powersync/schema";
 import { MAX_BATCH } from "@/lib/tickets";
 import { formatDate, formatRelative, formatTime } from "@/lib/format";
 import { TONE_BADGE } from "@/lib/verdicts";
 import { cn } from "@/lib/utils";
 
-const PAGE = 100;
+const PAGE_SIZE = 50;
 
-/** Zip of print-ready PDFs (one per batch); the browser downloads it in place. */
+/** Zip of print-ready PDFs (one per batch). */
 function downloadUrl(eventId: string, batchId?: string) {
   const params = new URLSearchParams({ tz: Intl.DateTimeFormat().resolvedOptions().timeZone });
   if (batchId) params.set("batch", batchId);
@@ -84,18 +86,39 @@ export function TicketsPanel({ eventId }: { eventId: string }) {
               <BatchItem key={batch.id} batch={batch} currency={currency} entranceName={entranceName(batch.entrance_id)} />
             ))}
             {batches.length > 1 && (
-              <Button asChild variant="outline" className="mt-2 w-full">
-                <a href={downloadUrl(eventId)} download>
-                  <DownloadIcon data-icon="inline-start" />
-                  Download every batch
-                </a>
-              </Button>
+              <DownloadButton url={downloadUrl(eventId)} label="every batch" variant="outline" className="mt-2 w-full">
+                Download every batch
+              </DownloadButton>
             )}
           </CardContent>
         </Card>
       </div>
       <TicketTable eventId={eventId} entranceName={entranceName} />
     </div>
+  );
+}
+
+/** Downloads with a progress toast; disabled (with a spinner) until the file is saved. */
+function DownloadButton({
+  url,
+  label,
+  children,
+  ...props
+}: { url: string; label: string } & Omit<ComponentProps<typeof Button>, "onClick">) {
+  const [pending, setPending] = useState(false);
+  return (
+    <Button
+      {...props}
+      disabled={pending}
+      onClick={async () => {
+        setPending(true);
+        await downloadWithProgress(url, label);
+        setPending(false);
+      }}
+    >
+      {pending ? <Loader2Icon className="animate-spin" data-icon={children ? "inline-start" : undefined} /> : <DownloadIcon data-icon={children ? "inline-start" : undefined} />}
+      {children}
+    </Button>
   );
 }
 
@@ -116,11 +139,13 @@ function BatchItem({ batch, currency, entranceName }: { batch: BatchRow; currenc
           {batch.price_minor != null && ` × ${formatMoney(batch.price_minor, currency)}`} · {formatRelative(batch.created_at)}
         </p>
       </div>
-      <Button asChild variant="ghost" size="icon-sm" aria-label="Download batch">
-        <a href={downloadUrl(batch.event_id, batch.id)} download>
-          <DownloadIcon />
-        </a>
-      </Button>
+      <DownloadButton
+        url={downloadUrl(batch.event_id, batch.id)}
+        label={batch.label || `${batch.quantity} tickets`}
+        variant="ghost"
+        size="icon-sm"
+        aria-label="Download batch"
+      />
       <Button variant="ghost" size="icon-sm" aria-label="Delete batch" onClick={() => setConfirm(true)}>
         <Trash2Icon />
       </Button>
@@ -217,13 +242,20 @@ function GenerateDialog({ eventId, entrances, currency }: { eventId: string; ent
 function TicketTable({ eventId, entranceName }: { eventId: string; entranceName: (id: string | null) => string | null }) {
   const [search, setSearch] = useQueryState("q", searchParser);
   const [filter, setFilter] = useQueryState("status", ticketStatusParser);
-  const [limit, setLimit] = useState(PAGE);
-  const { data: tickets, isLoading } = useTickets(eventId, { search, filter, limit });
+  const [page, setPage] = useQueryState("page", pageParser);
+  const { data: tickets, total, isLoading } = useTickets(eventId, { search, filter, page, pageSize: PAGE_SIZE });
+  useClampPage(page, total, PAGE_SIZE, setPage);
 
   return (
     <Card className="gap-0 rounded-xl pt-0">
       <StickyToolbar className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Tabs value={filter} onValueChange={(v) => setFilter(TICKET_STATUSES.find((s) => s === v) ?? "all")}>
+        <Tabs
+          value={filter}
+          onValueChange={(v) => {
+            setFilter(TICKET_STATUSES.find((s) => s === v) ?? "all");
+            setPage(null);
+          }}
+        >
           <TabsList>
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="unused">Unused</TabsTrigger>
@@ -237,7 +269,10 @@ function TicketTable({ eventId, entranceName }: { eventId: string; entranceName:
           </InputGroupAddon>
           <InputGroupInput
             value={search}
-            onChange={(e) => setSearch(e.target.value.replace(/[^a-z0-9]/gi, "").slice(0, 6))}
+            onChange={(e) => {
+              setSearch(e.target.value.replace(/[^a-z0-9]/gi, "").slice(0, 6));
+              setPage(null);
+            }}
             placeholder="Find a code"
             className="ticket-code uppercase placeholder:font-sans placeholder:normal-case placeholder:tracking-normal"
           />
@@ -271,11 +306,7 @@ function TicketTable({ eventId, entranceName }: { eventId: string; entranceName:
                 ))}
               </TableBody>
             </Table>
-            {tickets.length === limit && (
-              <Button variant="ghost" className="mt-3 w-full" onClick={() => setLimit((l) => l + PAGE)}>
-                Show more
-              </Button>
-            )}
+            <Paginator page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} noun="tickets" className="mt-4" />
           </>
         )}
       </CardContent>

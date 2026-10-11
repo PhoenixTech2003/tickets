@@ -244,7 +244,7 @@ function CodeEntry({ eventId, onScan }: { eventId: string; onScan: (code: string
         </dl>
       </Card>
 
-      {outcome && <ScanResult key={outcome.id} outcome={outcome} />}
+      {outcome && <ScanResult key={outcome.id} outcome={outcome} onDismiss={() => setOutcome(null)} />}
 
       {mine.length > 0 && (
         <section className="space-y-2">

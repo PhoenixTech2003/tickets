@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useStatus } from "@powersync/react";
-import { useQueryState } from "nuqs";
+import { useQueryState, useQueryStates } from "nuqs";
 import { CalendarClockIcon, Loader2Icon, MapPinIcon, MoreHorizontalIcon, PencilIcon, PowerIcon, Trash2Icon } from "lucide-react";
 import { Confirm } from "@/components/app/confirm";
 import { ActivityPanel } from "@/components/app/events/activity-panel";
@@ -31,7 +31,7 @@ import { deleteEvent, setEventDisabled } from "@/server/actions/events";
 import { useEvent, useOrganizers } from "@/lib/powersync/queries";
 import { useSession } from "@/lib/powersync/provider";
 import { formatDate, formatTime } from "@/lib/format";
-import { EVENT_TABS, eventTabParser, type EventTab } from "@/lib/search-params";
+import { EVENT_TABS, eventTabParser, pageParser, searchParser, ticketStatusParser, type EventTab } from "@/lib/search-params";
 
 const TAB_LABELS: Record<EventTab, string> = {
   overview: "Overview",
@@ -50,6 +50,8 @@ export function EventDetail({ eventId }: { eventId: string }) {
   const { data: organizers } = useOrganizers(eventId);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useQueryState("tab", eventTabParser);
+  // Search, status filter and page belong to the tab they were set on.
+  const [, setTabState] = useQueryStates({ q: searchParser, status: ticketStatusParser, page: pageParser });
   const rootRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -118,7 +120,10 @@ export function EventDetail({ eventId }: { eventId: string }) {
       <Tabs
         ref={rootRef}
         value={tab}
-        onValueChange={(value) => setTab(EVENT_TABS.find((t) => t === value) ?? "overview")}
+        onValueChange={(value) => {
+          setTab(EVENT_TABS.find((t) => t === value) ?? "overview");
+          setTabState(null);
+        }}
         className="gap-6"
       >
         {/* From md up the whole header sticks; on phones only the tab bar does (`contents` lets it stick on its own). */}

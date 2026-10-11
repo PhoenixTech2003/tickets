@@ -5,6 +5,7 @@ import { SearchIcon } from "lucide-react";
 import { useAction } from "@/components/app/use-action";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Paginator, useClampPage } from "@/components/app/paginator";
 import { StickyToolbar } from "@/components/app/sticky-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
@@ -13,7 +14,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { changeUserRole } from "@/server/actions/users";
 import { ROLE_LABELS, ROLES, type Role } from "@/lib/roles";
 import { formatDate, initials } from "@/lib/format";
-import { searchParser } from "@/lib/search-params";
+import { pageParser, searchParser } from "@/lib/search-params";
+
+const PAGE_SIZE = 25;
 
 type User = { id: string; name: string; email: string; image: string | null; role: Role; createdAt: Date };
 
@@ -22,6 +25,9 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
   const q = query.trim().toLowerCase();
   const visible = q ? users.filter((u) => u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)) : users;
   const counts = ROLES.map((role) => [role, users.filter((u) => u.role === role).length] as const);
+  const [page, setPage] = useQueryState("page", pageParser);
+  useClampPage(page, visible.length, PAGE_SIZE, setPage);
+  const pageRows = visible.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <Card className="gap-0 rounded-xl pt-0">
@@ -37,7 +43,15 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
           <InputGroupAddon>
             <SearchIcon />
           </InputGroupAddon>
-          <InputGroupInput value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name or email" />
+          <InputGroupInput
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(null);
+            }}
+            placeholder="Search name or email"
+            aria-label="Search people"
+          />
         </InputGroup>
       </StickyToolbar>
       <CardContent>
@@ -50,11 +64,15 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
             </TableRow>
           </TableHeader>
           <TableBody>
-            {visible.map((user) => (
+            {pageRows.map((user) => (
               <UserRow key={user.id} user={user} isSelf={user.id === currentUserId} />
             ))}
           </TableBody>
         </Table>
+        {visible.length === 0 && (
+          <p className="py-10 text-center text-sm text-muted-foreground">No one&apos;s name or email contains &ldquo;{query}&rdquo;.</p>
+        )}
+        <Paginator page={page} pageSize={PAGE_SIZE} total={visible.length} onPageChange={setPage} noun="people" className="mt-4" />
       </CardContent>
     </Card>
   );

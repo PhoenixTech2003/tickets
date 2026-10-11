@@ -78,6 +78,8 @@ export async function GET(request: Request, ctx: RouteContext<"/api/events/[even
   return new Response(Buffer.from(zip), {
     headers: {
       "Content-Type": "application/zip",
+      // Lets the client show a real percentage while the zip downloads.
+      "Content-Length": String(zip.byteLength),
       "Content-Disposition": `attachment; filename="${filename}"`,
       "Cache-Control": "private, no-store",
     },

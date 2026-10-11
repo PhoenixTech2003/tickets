@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useEffectEvent } from "react";
 import { ArrowRightIcon, BanIcon, CircleCheckBigIcon, CircleXIcon, DoorClosedIcon, HistoryIcon, SignpostIcon } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ScanOutcome } from "@/lib/powersync/scan";
@@ -24,20 +25,42 @@ const TONE_SURFACE: Record<Tone, string> = {
   destructive: "bg-destructive text-destructive-foreground",
 };
 
-/** Full-bleed verdict panel: solid colour, readable at arm's length, with next steps. */
-export function ScanResult({ outcome }: { outcome: ScanOutcome }) {
+/** How long each tone stays up: admits clear fast, problems stay long enough to read and act on. */
+const DISMISS_AFTER: Record<Tone, number> = { success: 4000, warning: 8000, destructive: 8000 };
+
+/**
+ * Full-bleed verdict panel: solid colour, readable at arm's length, with next
+ * steps. Clears itself after a few seconds (a bar drains to show the time
+ * left), or straight away when tapped.
+ */
+export function ScanResult({ outcome, onDismiss }: { outcome: ScanOutcome; onDismiss: () => void }) {
   const verdict = verdictOf(outcome.verdict);
   const Icon = VERDICT_ICONS[outcome.verdict];
+  const duration = DISMISS_AFTER[verdict.tone];
+  const dismiss = useEffectEvent(onDismiss);
+
+  // Keyed on the duration only, so live-query re-renders don't restart the timer.
+  useEffect(() => {
+    const timer = setTimeout(dismiss, duration);
+    return () => clearTimeout(timer);
+  }, [duration]);
 
   return (
     <section
       role="status"
       aria-live="assertive"
+      title="Tap to dismiss"
+      onClick={onDismiss}
       className={cn(
-        "animate-in fade-in zoom-in-[0.98] rounded-xl p-6 duration-200 motion-reduce:animate-none sm:p-8",
+        "relative animate-in cursor-pointer overflow-hidden rounded-xl p-6 duration-200 fade-in zoom-in-[0.98] motion-reduce:animate-none sm:p-8",
         TONE_SURFACE[verdict.tone],
       )}
     >
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-1 origin-left animate-drain bg-current opacity-40 motion-reduce:hidden"
+        style={{ animationDuration: `${duration}ms` }}
+      />
       <div className="flex items-center justify-between gap-4">
         <p className="ticket-code text-base font-medium opacity-80">{outcome.code}</p>
         <Icon className="size-8 shrink-0 sm:size-10" strokeWidth={2} />

@@ -1,17 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarPlusIcon, ChevronRightIcon, MapPinIcon, PlusIcon } from "lucide-react";
+import { CalendarPlusIcon, ChevronRightIcon, MapPinIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { useQueryState } from "nuqs";
 import { useStatus } from "@powersync/react";
 import { PageBody, PageHeader, StatStrip } from "@/components/app/page-header";
+import { Paginator, useClampPage } from "@/components/app/paginator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEvents, useEventStats } from "@/lib/powersync/queries";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEvents, useEventsPage, useEventStats } from "@/lib/powersync/queries";
 import { useSession } from "@/lib/powersync/provider";
 import type { EventRow } from "@/lib/powersync/schema";
 import { formatTime, percent, toDate } from "@/lib/format";
+import { EVENT_WHEN, eventWhenParser, pageParser, searchParser, type EventWhen } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
 import { useNow } from "@/hooks/use-now";
 
@@ -22,9 +27,6 @@ export function EventsView() {
   const { byEvent } = useEventStats();
   const canCreate = viewer.role === "admin" || viewer.role === "organizer";
 
-  const now = useNow();
-  const upcoming = events.filter((e) => toDate(e.ends_at ?? e.starts_at).getTime() >= now - 6 * 3600_000);
-  const past = events.filter((e) => !upcoming.includes(e));
   const totals = events.reduce(
     (acc, e) => {
       const s = byEvent.get(e.id);
@@ -78,27 +80,94 @@ export function EventsView() {
         </Empty>
       )}
 
-      {upcoming.length > 0 && <EventList title="Upcoming" events={upcoming} stats={byEvent} />}
-      {past.length > 0 && <EventList title="Past" events={past} stats={byEvent} muted />}
+      {events.length > 0 && <EventBrowser stats={byEvent} />}
     </PageBody>
   );
 }
 
 type Stats = ReturnType<typeof useEventStats>["byEvent"];
 
-function EventList({ title, events, stats, muted }: { title: string; events: EventRow[]; stats: Stats; muted?: boolean }) {
+const PAGE_SIZE = 10;
+const WHEN_LABELS: Record<EventWhen, string> = { upcoming: "Upcoming", past: "Past", all: "All" };
+const EMPTY_COPY: Record<EventWhen, string> = {
+  upcoming: "Nothing coming up.",
+  past: "No past events.",
+  all: "No events.",
+};
+
+/** Filter, search and page through events; all three live in the URL. */
+function EventBrowser({ stats }: { stats: Stats }) {
+  const now = useNow();
+  const [when, setWhen] = useQueryState("when", eventWhenParser);
+  const [search, setSearch] = useQueryState("q", searchParser);
+  const [page, setPage] = useQueryState("page", pageParser);
+  const { data: events, total, isLoading } = useEventsPage({ search, when, page, pageSize: PAGE_SIZE, now });
+  useClampPage(page, total, PAGE_SIZE, setPage);
+  const ended = (e: EventRow) => toDate(e.ends_at ?? e.starts_at).getTime() < now - 6 * 3600_000;
+
   return (
-    <section className="space-y-3">
-      <h2 className="text-lg font-semibold">
-        {title} <span className="font-normal text-muted-foreground">{events.length}</span>
-      </h2>
-      <ul className="divide-y overflow-hidden rounded-xl border bg-card">
-        {events.map((event) => (
-          <li key={event.id}>
-            <EventItem event={event} stats={stats.get(event.id)} muted={muted} />
-          </li>
-        ))}
-      </ul>
+    <section className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Tabs
+          value={when}
+          onValueChange={(v) => {
+            setWhen(EVENT_WHEN.find((w) => w === v) ?? "upcoming");
+            setPage(null);
+          }}
+        >
+          <TabsList>
+            {EVENT_WHEN.map((w) => (
+              <TabsTrigger key={w} value={w}>
+                {WHEN_LABELS[w]}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+        <InputGroup className="sm:max-w-72">
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+          <InputGroupInput
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(null);
+            }}
+            placeholder="Search by name or venue"
+            aria-label="Search events"
+          />
+        </InputGroup>
+      </div>
+
+      {!isLoading && events.length === 0 ? (
+        <Empty className="rounded-xl border border-dashed bg-card py-12">
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <SearchIcon />
+            </EmptyMedia>
+            <EmptyTitle>{search ? "No events match" : EMPTY_COPY[when]}</EmptyTitle>
+            <EmptyDescription>
+              {search ? `No event name or venue contains “${search}”.` : "Switch to All to see every event."}
+            </EmptyDescription>
+          </EmptyHeader>
+          {when !== "all" && (
+            <EmptyContent>
+              <Button variant="outline" onClick={() => setWhen("all")}>
+                Show all events
+              </Button>
+            </EmptyContent>
+          )}
+        </Empty>
+      ) : (
+        <ul className="divide-y overflow-hidden rounded-xl border bg-card">
+          {events.map((event) => (
+            <li key={event.id}>
+              <EventItem event={event} stats={stats.get(event.id)} muted={ended(event)} />
+            </li>
+          ))}
+        </ul>
+      )}
+      <Paginator page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} noun="events" />
     </section>
   );
 }
