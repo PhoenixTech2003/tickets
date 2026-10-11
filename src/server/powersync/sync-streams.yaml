@@ -1,0 +1,43 @@
+# PowerSync Sync Streams — paste into PowerSync Dashboard → Sync Streams, then Validate → Deploy.
+# Tokens come from /api/powersync/token: `sub` = Neon Auth user id, `role` = admin plugin role.
+config:
+  edition: 3
+
+streams:
+  # Admins see every event and everything under it.
+  admin_everything:
+    auto_subscribe: true
+    queries:
+      - SELECT * FROM events WHERE auth.parameter('role') = 'admin'
+      - SELECT * FROM entrances WHERE auth.parameter('role') = 'admin'
+      - SELECT * FROM event_organizers WHERE auth.parameter('role') = 'admin'
+      - SELECT * FROM event_scanners WHERE auth.parameter('role') = 'admin'
+      - SELECT * FROM ticket_batches WHERE auth.parameter('role') = 'admin'
+      - SELECT * FROM tickets WHERE auth.parameter('role') = 'admin'
+      - SELECT * FROM scans WHERE auth.parameter('role') = 'admin'
+
+  # Organizers: events they created (owner row) or were invited to.
+  organizer_events:
+    auto_subscribe: true
+    with:
+      managed: SELECT event_id FROM event_organizers WHERE user_id = auth.user_id()
+    queries:
+      - SELECT * FROM events WHERE id IN managed
+      - SELECT * FROM entrances WHERE event_id IN managed
+      - SELECT * FROM event_organizers WHERE event_id IN managed
+      - SELECT * FROM event_scanners WHERE event_id IN managed
+      - SELECT * FROM ticket_batches WHERE event_id IN managed
+      - SELECT * FROM tickets WHERE event_id IN managed
+      - SELECT * FROM scans WHERE event_id IN managed
+
+  # Scanners: everything needed to verify tickets offline for their events.
+  scanner_events:
+    auto_subscribe: true
+    with:
+      assigned: SELECT event_id FROM event_scanners WHERE user_id = auth.user_id() AND disabled = false
+    queries:
+      - SELECT * FROM events WHERE id IN assigned
+      - SELECT * FROM entrances WHERE event_id IN assigned
+      - SELECT * FROM tickets WHERE event_id IN assigned
+      - SELECT * FROM scans WHERE event_id IN assigned AND scanner_id = auth.user_id()
+      - SELECT * FROM event_scanners WHERE user_id = auth.user_id()

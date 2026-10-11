@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
+  // Per the PowerSync Next.js guide: keeps Turbopack from treating the
+  // SDK's bundled assets as static image imports.
+  images: { disableStaticImages: true },
   turbopack: {
     rules: {
       "*.css": {
