@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { OgStubMark } from "@/components/app/og-stub-mark";
 import { site } from "@/lib/site";
 
 export const alt = site.title;
@@ -45,10 +46,7 @@ export default async function OpengraphImage() {
       >
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ width: 30, height: 40, display: "flex", flexDirection: "column", borderRadius: 7, background: graphite }}>
-              <div style={{ height: "62%" }} />
-              <div style={{ margin: "0 5px", borderTop: `3px dotted ${chalk}`, opacity: 0.75 }} />
-            </div>
+            <OgStubMark width={30} />
             <span style={{ fontSize: 34, fontWeight: 800, letterSpacing: -1 }}>{site.name}</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
