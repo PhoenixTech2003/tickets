@@ -1,5 +1,6 @@
 "use client";
 
+import { useOffline } from "next/offline";
 import Link from "next/link";
 import { useStatus } from "@powersync/react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -11,7 +12,7 @@ const DOT = { success: "bg-success", warning: "bg-warning", destructive: "bg-des
 /** Compact live indicator; links to the full sync status page. */
 export function SyncStatus({ href, className }: { href: string; className?: string }) {
   const status = useStatus();
-  const state = deriveSyncState(status);
+  const state = deriveSyncState(status, useOffline());
 
   return (
     <Tooltip>

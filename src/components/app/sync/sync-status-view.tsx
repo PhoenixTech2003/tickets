@@ -1,5 +1,6 @@
 "use client";
 
+import { useOffline } from "next/offline";
 import { useState, type ReactNode } from "react";
 import { usePowerSync, useQuery, useStatus } from "@powersync/react";
 import {
@@ -40,7 +41,7 @@ const COUNT_SQL = `SELECT ${LOCAL_TABLES.map((t) => `(SELECT count(*) FROM ${t})
 export function SyncStatusView({ header }: { header: ReactNode }) {
   const now = useNow(15_000);
   const status = useStatus();
-  const state = deriveSyncState(status);
+  const state = deriveSyncState(status, useOffline());
   const queue = useUploadQueue();
   const flow = status.dataFlowStatus;
 

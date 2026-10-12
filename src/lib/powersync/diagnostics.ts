@@ -107,9 +107,14 @@ export type SyncState = {
   tone: "destructive" | "warning" | "success";
 };
 
-/** Indicator precedence recommended by PowerSync: errors → connecting → offline → transferring → connected. */
-export function deriveSyncState(status: SyncStatus): SyncState {
+/**
+ * Indicator precedence recommended by PowerSync: errors → connecting → offline → transferring → connected.
+ * A device with no network comes first: its failed reconnect attempts set
+ * errors and "connecting", but the real state is simply offline.
+ */
+export function deriveSyncState(status: SyncStatus, deviceOffline = false): SyncState {
   const flow = status.dataFlowStatus;
+  if (deviceOffline) return { key: "offline", label: "Offline", tone: "destructive" };
   if (flow.downloadError || flow.uploadError) return { key: "error", label: "Sync error", tone: "destructive" };
   if (status.connecting) return { key: "connecting", label: "Connecting", tone: "warning" };
   if (!status.connected) return { key: "offline", label: "Offline", tone: "destructive" };
