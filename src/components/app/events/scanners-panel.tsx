@@ -23,7 +23,6 @@ import {
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { addScanner, removeScanner, setScannerDisabled, updateScannerEntrance } from "@/server/actions/scanners";
 import type { UserHit } from "@/server/actions/users";
 import { useEntrances, useScanners } from "@/lib/powersync/queries";
@@ -58,22 +57,10 @@ export function ScannersPanel({ eventId }: { eventId: string }) {
         </Empty>
       ) : (
         <Card className="rounded-xl py-2">
-          <CardContent className="px-2">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Scanner</TableHead>
-                  <TableHead>Stationed at</TableHead>
-                  <TableHead>Active</TableHead>
-                  <TableHead className="w-10" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {scanners.map((scanner) => (
-                  <ScannerRowView key={scanner.id} scanner={scanner} entrances={entrances} />
-                ))}
-              </TableBody>
-            </Table>
+          <CardContent className="divide-y px-2">
+            {scanners.map((scanner) => (
+              <ScannerRowView key={scanner.id} scanner={scanner} entrances={entrances} />
+            ))}
           </CardContent>
         </Card>
       )}
@@ -89,44 +76,26 @@ function ScannerRowView({ scanner, entrances }: { scanner: ScannerRow; entrances
   const disabled = scanner.disabled === 1;
 
   return (
-    <TableRow>
-      <TableCell>
-        <div className="flex items-center gap-3">
-          <Avatar className="size-8">
-            <AvatarFallback className="text-xs">{initials(scanner.user_name)}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0">
-            <p className="truncate font-medium">
-              {scanner.user_name}
-              {disabled && (
-                <Badge variant="outline" className="ml-2">
-                  Disabled
-                </Badge>
-              )}
-            </p>
-            <p className="truncate text-xs text-muted-foreground">{scanner.user_email}</p>
-          </div>
+    <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-3 py-3 sm:flex">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <Avatar className="size-8">
+          <AvatarFallback className="text-xs">{initials(scanner.user_name)}</AvatarFallback>
+        </Avatar>
+        <div className="min-w-0">
+          <p className="flex items-center gap-2 font-medium">
+            <span className="truncate">{scanner.user_name}</span>
+            {disabled && <Badge variant="outline">Disabled</Badge>}
+          </p>
+          <p className="truncate text-xs text-muted-foreground">{scanner.user_email}</p>
         </div>
-      </TableCell>
-      <TableCell>
-        <EntranceSelect
-          entrances={entrances}
-          value={scanner.entrance_id}
-          onChange={(entranceId) => move.execute({ id: scanner.id, entranceId })}
-          anyLabel="Any entrance (roaming)"
-          disabled={move.pending}
-          className="w-52"
-        />
-      </TableCell>
-      <TableCell>
+      </div>
+      <div className="flex items-center gap-1 sm:order-last">
         <Switch
           checked={!disabled}
           disabled={toggle.pending}
           aria-label={disabled ? "Enable scanner" : "Disable scanner"}
           onCheckedChange={(active) => toggle.execute({ id: scanner.id, disabled: !active })}
         />
-      </TableCell>
-      <TableCell>
         <Button variant="ghost" size="icon-sm" aria-label="Remove scanner" onClick={() => setConfirm(true)}>
           <Trash2Icon />
         </Button>
@@ -138,8 +107,17 @@ function ScannerRowView({ scanner, entrances }: { scanner: ScannerRow; entrances
           confirmLabel="Remove"
           onConfirm={() => remove.execute({ id: scanner.id })}
         />
-      </TableCell>
-    </TableRow>
+      </div>
+      <EntranceSelect
+        entrances={entrances}
+        value={scanner.entrance_id}
+        onChange={(entranceId) => move.execute({ id: scanner.id, entranceId })}
+        anyLabel="Any entrance (roaming)"
+        disabled={move.pending}
+        ariaLabel={`${scanner.user_name}'s station`}
+        className="col-span-2 w-full sm:w-52"
+      />
+    </div>
   );
 }
 

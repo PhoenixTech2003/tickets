@@ -18,8 +18,8 @@ export function ScanShell({ children }: { children: ReactNode }) {
   const canManage = useAccess().dashboard;
   return (
     <div className="flex flex-1 flex-col">
-      <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-background/70 px-4 py-3 backdrop-blur-xl sm:px-6">
-        <Brand href={canManage ? "/dashboard" : "/scan"} />
+      <header className="sticky top-0 z-20 flex items-center gap-2 border-b bg-background/70 px-4 py-3 backdrop-blur-xl sm:px-6">
+        <Brand href={canManage ? "/dashboard" : "/scan"} className="max-[400px]:[&>span:last-child]:sr-only" />
         <div className="ml-auto flex items-center gap-1.5">
           <SyncStatus href="/scan/sync" />
           {canManage && (

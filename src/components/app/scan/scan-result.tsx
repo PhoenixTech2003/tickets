@@ -52,7 +52,7 @@ export function ScanResult({ outcome, onDismiss }: { outcome: ScanOutcome; onDis
       title="Tap to dismiss"
       onClick={onDismiss}
       className={cn(
-        "relative animate-in cursor-pointer overflow-hidden rounded-xl p-6 duration-200 fade-in zoom-in-[0.98] motion-reduce:animate-none sm:p-8",
+        "relative animate-in cursor-pointer overflow-hidden rounded-xl p-5 duration-200 fade-in zoom-in-[0.98] motion-reduce:animate-none sm:p-8",
         TONE_SURFACE[verdict.tone],
       )}
     >
@@ -65,7 +65,7 @@ export function ScanResult({ outcome, onDismiss }: { outcome: ScanOutcome; onDis
         <p className="ticket-code text-base font-medium opacity-80">{outcome.code}</p>
         <Icon className="size-8 shrink-0 sm:size-10" strokeWidth={2} />
       </div>
-      <h2 className="mt-3 text-5xl leading-none font-extrabold tracking-[-0.03em] sm:text-6xl">{verdict.label}</h2>
+      <h2 className="mt-3 text-4xl leading-none font-extrabold tracking-[-0.03em] break-words min-[400px]:text-5xl sm:text-6xl">{verdict.label}</h2>
       <div className="mt-3 max-w-prose">
         <Detail outcome={outcome} />
       </div>

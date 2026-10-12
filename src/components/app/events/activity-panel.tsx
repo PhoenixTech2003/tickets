@@ -76,9 +76,9 @@ export function ActivityPanel({ eventId }: { eventId: string }) {
               const verdict = verdictOf(scan.result);
               const overruled = scan.client_result && scan.client_result !== scan.result;
               return (
-                <div key={scan.id} className="flex items-center gap-4 py-3 animate-in fade-in slide-in-from-top-1">
+                <div key={scan.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 animate-in fade-in slide-in-from-top-1 sm:flex-nowrap">
                   <span className="w-14 shrink-0 text-xs text-muted-foreground tabular-nums">{formatTime(scan.scanned_at)}</span>
-                  <span className="w-24 shrink-0 ticket-code">{scan.code}</span>
+                  <span className="w-20 shrink-0 ticket-code sm:w-24">{scan.code}</span>
                   <Badge variant="outline" className={cn("shrink-0", TONE_BADGE[verdict.tone])}>
                     {verdict.label}
                   </Badge>
@@ -87,7 +87,7 @@ export function ActivityPanel({ eventId }: { eventId: string }) {
                       device said {verdictOf(scan.client_result!).label.toLowerCase()}
                     </span>
                   )}
-                  <span className="ml-auto truncate text-right text-sm text-muted-foreground">
+                  <span className="w-full truncate pl-18 text-sm text-muted-foreground sm:ml-auto sm:w-auto sm:pl-0 sm:text-right">
                     {entranceName(scan.entrance_id)} · {scan.scanner_name}
                     <span className="hidden lg:inline"> · {formatRelative(scan.scanned_at)}</span>
                   </span>

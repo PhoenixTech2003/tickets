@@ -26,8 +26,8 @@ export function PageHeader({
         )}
       </div>
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-1.5">
-          <h1 className="text-3xl font-bold text-balance md:text-4xl">{title}</h1>
+        <div className="min-w-0 space-y-1.5">
+          <h1 className="text-3xl font-bold break-words text-balance md:text-4xl">{title}</h1>
           {description && <div className="max-w-2xl text-muted-foreground">{description}</div>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -55,13 +55,19 @@ export function StatStrip({
       )}
     >
       {stats.map(({ label, value, hint, live }) => (
-        <div key={label} className="-mt-px -ml-px border-t border-l px-5 py-4">
+        <div
+          key={label}
+          className={cn(
+            "-mt-px -ml-px min-w-0 border-t border-l px-4 py-3.5 sm:px-5 sm:py-4",
+            stats.length <= 4 ? "max-lg:last:odd:col-span-2" : "max-md:last:odd:col-span-2",
+          )}
+        >
           <dt className="flex items-center gap-2 text-sm text-muted-foreground">
             {live && <span className="size-1.5 animate-pulse rounded-full bg-success" />}
             {label}
           </dt>
           <dd className="mt-1 flex flex-wrap items-baseline gap-x-2">
-            <span className="text-3xl font-bold tracking-tight">{typeof value === "number" ? value.toLocaleString() : value}</span>
+            <span className="min-w-0 text-2xl font-bold tracking-tight break-words sm:text-3xl">{typeof value === "number" ? value.toLocaleString() : value}</span>
             {hint && <span className="text-sm text-muted-foreground">{hint}</span>}
           </dd>
         </div>

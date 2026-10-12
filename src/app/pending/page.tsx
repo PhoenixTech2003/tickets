@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Access needed" };
 
 export default function PendingPage() {
   return (
-    <div className="flex flex-1 flex-col px-6 py-5">
+    <div className="flex flex-1 flex-col px-4 py-5 sm:px-6">
       <Brand />
       <div className="grid flex-1 place-items-center">
         <Suspense fallback={<Skeleton className="h-64 w-full max-w-md rounded-xl" />}>
@@ -30,7 +30,7 @@ async function Pending() {
   if (home !== "/pending") redirect(home);
 
   return (
-    <Empty className="max-w-md rounded-xl border bg-card p-10">
+    <Empty className="max-w-md rounded-xl border bg-card p-6 sm:p-10">
       <EmptyHeader>
         <EmptyMedia variant="icon">
           <KeyRoundIcon />

@@ -73,7 +73,7 @@ export function Scanner() {
   if (options.length === 0) {
     return (
       <main className="grid flex-1 place-items-center p-6">
-        <Empty className="max-w-md rounded-xl border border-dashed bg-card p-10">
+        <Empty className="max-w-md rounded-xl border border-dashed bg-card p-6 sm:p-10">
           <EmptyHeader>
             <EmptyMedia variant="icon">
               <ScanLineIcon />
@@ -214,15 +214,15 @@ function CodeEntry({ eventId, onScan }: { eventId: string; onScan: (code: string
               const code = normalizeCode(v);
               if (code.length === CODE_LENGTH) void submit(code);
             }}
-            containerClassName="gap-2"
+            containerClassName="gap-1.5 sm:gap-2"
           >
-            <InputOTPGroup className="gap-2">
+            <InputOTPGroup className="gap-1.5 sm:gap-2">
               {[0, 1, 2].map((i) => (
                 <CodeSlot key={i} index={i} />
               ))}
             </InputOTPGroup>
             <InputOTPSeparator className="text-muted-foreground" />
-            <InputOTPGroup className="gap-2">
+            <InputOTPGroup className="gap-1.5 sm:gap-2">
               {[3, 4, 5].map((i) => (
                 <CodeSlot key={i} index={i} />
               ))}
@@ -273,7 +273,7 @@ function CodeSlot({ index }: { index: number }) {
   return (
     <InputOTPSlot
       index={index}
-      className="h-14 w-11 rounded-lg border bg-background font-mono text-2xl font-semibold first:rounded-lg last:rounded-lg sm:h-16 sm:w-14 sm:text-3xl data-[active=true]:border-primary data-[active=true]:ring-primary/30"
+      className="h-12 w-10 rounded-lg border bg-background font-mono text-2xl font-semibold first:rounded-lg last:rounded-lg sm:h-16 sm:w-14 sm:text-3xl data-[active=true]:border-primary data-[active=true]:ring-primary/30"
     />
   );
 }

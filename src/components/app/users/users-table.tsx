@@ -41,7 +41,7 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <InputGroup className="min-w-0 sm:w-72">
+          <InputGroup className="flex-1 sm:w-72 sm:flex-none">
             <InputGroupAddon>
               <SearchIcon />
             </InputGroupAddon>
@@ -59,12 +59,12 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
         </div>
       </StickyToolbar>
       <CardContent>
-        <Table>
+        <Table className="table-fixed">
           <TableHeader>
             <TableRow>
               <TableHead>Person</TableHead>
-              <TableHead className="hidden md:table-cell">Joined</TableHead>
-              <TableHead className="w-56">Role</TableHead>
+              <TableHead className="hidden w-36 md:table-cell">Joined</TableHead>
+              <TableHead className="w-32 sm:w-56">Role</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -88,7 +88,7 @@ function RefreshButton() {
   return (
     <Button variant="outline" onClick={() => refresh.execute(undefined)} disabled={refresh.pending}>
       {refresh.pending ? <Loader2Icon className="animate-spin" /> : <RefreshCwIcon />}
-      Refresh
+      <span className="max-sm:sr-only">Refresh</span>
     </Button>
   );
 }
@@ -100,7 +100,7 @@ function UserRow({ user, isSelf }: { user: User; isSelf: boolean }) {
   return (
     <TableRow>
       <TableCell>
-        <div className="flex items-center gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <Avatar className="size-9">
             {user.image && <AvatarImage src={user.image} alt="" />}
             <AvatarFallback>{initials(user.name)}</AvatarFallback>

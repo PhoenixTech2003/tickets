@@ -87,7 +87,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className={cn("rounded-xl border bg-card p-5", className)}>
+    <section className={cn("min-w-0 rounded-xl border bg-card p-4 sm:p-5", className)}>
       <h2 className="font-semibold">{title}</h2>
       {description && <p className="text-sm text-muted-foreground">{description}</p>}
       <div className="mt-5">{children}</div>
@@ -199,7 +199,11 @@ export function HourlyChart({ bars }: { bars: { at: number; total: number }[] })
         <div aria-hidden />
         <div aria-hidden className="flex gap-0.5 text-xs text-muted-foreground tabular-nums">
           {bars.map((bar, i) => (
-            <span key={bar.at} className="min-w-0 flex-1 text-center whitespace-nowrap">
+            // Phones keep every other label so neighbours don't collide.
+            <span
+              key={bar.at}
+              className={cn("min-w-0 flex-1 text-center whitespace-nowrap", (i / labelEvery) % 2 === 1 && "max-sm:invisible")}
+            >
               {i % labelEvery === 0 ? hourFmt.format(bar.at) : ""}
             </span>
           ))}
@@ -280,9 +284,9 @@ function EntranceProgress({ eventId }: { eventId: string }) {
             return (
               <li key={id} className="space-y-2">
                 <div className="flex items-baseline gap-2 text-sm">
-                  <span className="truncate font-medium">{name}</span>
+                  <span className="min-w-0 truncate font-medium">{name}</span>
                   {closed && <Badge variant="outline">Closed</Badge>}
-                  <span className="ml-auto text-muted-foreground tabular-nums">
+                  <span className="ml-auto shrink-0 text-muted-foreground tabular-nums">
                     {admitted.toLocaleString()} of {total.toLocaleString()}
                   </span>
                   <span className="w-10 text-right font-medium tabular-nums">{pct}%</span>

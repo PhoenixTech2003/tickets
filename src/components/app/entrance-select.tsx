@@ -12,6 +12,7 @@ export function EntranceSelect({
   onChange,
   anyLabel = "Any entrance",
   id,
+  ariaLabel,
   className,
   disabled,
 }: {
@@ -20,12 +21,13 @@ export function EntranceSelect({
   onChange: (value: string | null) => void;
   anyLabel?: string;
   id?: string;
+  ariaLabel?: string;
   className?: string;
   disabled?: boolean;
 }) {
   return (
     <Select value={value ?? ANY} onValueChange={(v) => onChange(v === ANY ? null : v)} disabled={disabled}>
-      <SelectTrigger id={id} className={className}>
+      <SelectTrigger id={id} aria-label={ariaLabel} className={className}>
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

@@ -72,7 +72,7 @@ export function TicketsPanel({ eventId }: { eventId: string }) {
   const entranceName = (id: string | null) => entrances.find((e) => e.id === id)?.name ?? null;
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[22rem_1fr]">
+    <div className="grid min-w-0 gap-6 xl:grid-cols-[22rem_1fr]">
       <div className="space-y-4 xl:sticky xl:top-[calc(var(--sticky-offset,0px)+1.5rem)] xl:self-start">
         <GenerateDialog eventId={eventId} entrances={entrances} currency={currency} />
         <Card className="gap-4 rounded-xl">
@@ -291,11 +291,11 @@ function TicketTable({ eventId, entranceName }: { eventId: string; entranceName:
           </Empty>
         ) : (
           <>
-            <Table>
+            <Table className="table-fixed">
               <TableHeader>
                 <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Entrance</TableHead>
+                  <TableHead className="w-28">Code</TableHead>
+                  <TableHead className="hidden sm:table-cell">Entrance</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="w-10" />
                 </TableRow>
@@ -321,17 +321,21 @@ function TicketRowView({ ticket, entrance, redeemedAt }: { ticket: TicketRow; en
 
   return (
     <TableRow className={cn(voided && "opacity-60")}>
-      <TableCell className="ticket-code text-base">{ticket.code}</TableCell>
-      <TableCell className="text-muted-foreground">{entrance ?? "Any"}</TableCell>
+      <TableCell>
+        <p className="ticket-code text-base">{ticket.code}</p>
+        {/* The entrance column is hidden on phones, so it sits under the code. */}
+        <p className="truncate text-xs text-muted-foreground sm:hidden">{entrance ?? "Any entrance"}</p>
+      </TableCell>
+      <TableCell className="hidden truncate text-muted-foreground sm:table-cell">{entrance ?? "Any"}</TableCell>
       <TableCell>
         {voided ? (
           <Badge variant="outline" className={TONE_BADGE.destructive}>
             Voided
           </Badge>
         ) : ticket.redeemed_at ? (
-          <Badge variant="outline" className={TONE_BADGE.success}>
+          <Badge variant="outline" className={cn("max-w-full", TONE_BADGE.success)}>
             Admitted {formatDate(ticket.redeemed_at) === formatDate(new Date()) ? formatTime(ticket.redeemed_at) : formatDate(ticket.redeemed_at)}
-            {redeemedAt && ` · ${redeemedAt}`}
+            {redeemedAt && <span className="hidden sm:inline"> · {redeemedAt}</span>}
           </Badge>
         ) : (
           <Badge variant="outline">Unused</Badge>

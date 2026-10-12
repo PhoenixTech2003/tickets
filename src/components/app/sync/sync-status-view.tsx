@@ -52,10 +52,10 @@ export function SyncStatusView({ header }: { header: ReactNode }) {
       {header}
 
       <Card className={cn("gap-6 rounded-xl border shadow-none", TONE_BADGE[state.tone])}>
-        <CardContent className="flex flex-col gap-6 sm:flex-row sm:items-center">
+        <CardContent className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
           <HeroIcon className={cn("size-10 shrink-0", (state.key === "connecting" || state.key === "syncing") && "animate-spin [animation-duration:2s]")} strokeWidth={2} />
           <div className="flex-1 space-y-1 text-foreground">
-            <h2 className="text-3xl font-bold">{state.label}</h2>
+            <h2 className="text-2xl font-bold sm:text-3xl">{state.label}</h2>
             <p className="text-muted-foreground">{describe(state.key, queue.count)}</p>
           </div>
           <Actions pending={queue.count} />
@@ -63,7 +63,7 @@ export function SyncStatusView({ header }: { header: ReactNode }) {
         <SyncProgress className="px-6" />
       </Card>
 
-      <section className="grid overflow-hidden rounded-xl border bg-card sm:grid-cols-2 lg:grid-cols-3">
+      <section className="grid grid-cols-2 overflow-hidden rounded-xl border bg-card lg:grid-cols-3">
         <Flag label="Connected" on={status.connected} hint={status.connecting ? "Connecting now" : undefined} />
         <Flag label="Uploading" on={flow.uploading} hint="Sending local changes through uploadData" />
         <Flag label="Downloading" on={flow.downloading} hint="Receiving changes from the service" />
@@ -159,9 +159,9 @@ function Actions({ pending }: { pending: number }) {
 
 function Flag({ label, on, hint }: { label: string; on: boolean; hint?: string }) {
   return (
-    <div className="-mt-px -ml-px border-t border-l p-5">
+    <div className="-mt-px -ml-px min-w-0 border-t border-l p-4 sm:p-5">
       <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="mt-1 flex items-center gap-2 text-2xl font-bold">
+      <p className="mt-1 flex items-center gap-2 text-xl font-bold sm:text-2xl">
         <span className={cn("size-2.5 rounded-full", on ? "bg-success" : "bg-muted-foreground/30")} />
         {on ? "Yes" : "No"}
       </p>
@@ -172,9 +172,9 @@ function Flag({ label, on, hint }: { label: string; on: boolean; hint?: string }
 
 function Tile({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="-mt-px -ml-px border-t border-l p-5">
+    <div className="-mt-px -ml-px min-w-0 border-t border-l p-4 sm:p-5">
       <p className="text-sm text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-bold">{value}</p>
+      <p className="mt-1 text-xl font-bold break-words sm:text-2xl">{value}</p>
       {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
@@ -204,7 +204,7 @@ function StreamsCard({ now }: { now: number }) {
               {streams.map(({ subscription, progress }) => (
                 <TableRow key={`${subscription.name}:${JSON.stringify(subscription.parameters)}`}>
                   <TableCell>
-                    <p className="font-mono text-sm">{subscription.name}</p>
+                    <p className="font-mono text-sm break-all">{subscription.name}</p>
                     <p className="text-xs text-muted-foreground">{subscription.isDefault ? "auto-subscribed" : "explicit"}</p>
                   </TableCell>
                   <TableCell>
@@ -281,7 +281,7 @@ function EventLogCard() {
                       event.tone === "error" ? "text-destructive" : event.tone === "success" ? "text-success" : "text-muted-foreground",
                     )}
                   />
-                  <span className="flex-1 break-words">{event.message}</span>
+                  <span className="min-w-0 flex-1 break-words">{event.message}</span>
                   <span className="font-mono text-xs text-muted-foreground">{formatTime(event.at)}</span>
                 </li>
               );

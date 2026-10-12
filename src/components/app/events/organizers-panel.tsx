@@ -62,8 +62,8 @@ function OrganizerItem({ organizer, canRevoke }: { organizer: OrganizerRow; canR
         <AvatarFallback>{initials(organizer.user_name)}</AvatarFallback>
       </Avatar>
       <div className="min-w-0 flex-1">
-        <p className="flex items-center gap-2 truncate font-medium">
-          {organizer.user_name}
+        <p className="flex items-center gap-2 font-medium">
+          <span className="truncate">{organizer.user_name}</span>
           {owner && (
             <Badge variant="outline" className="border-foreground/20 bg-foreground/5">
               <CrownIcon />
@@ -77,9 +77,9 @@ function OrganizerItem({ organizer, canRevoke }: { organizer: OrganizerRow; canR
       </div>
       {canRevoke && !owner && (
         <>
-          <Button variant="ghost" size="sm" onClick={() => setConfirm(true)} disabled={revoke.pending}>
+          <Button variant="ghost" size="sm" onClick={() => setConfirm(true)} disabled={revoke.pending} aria-label={`Revoke ${organizer.user_name}`}>
             <UserMinusIcon data-icon="inline-start" />
-            Revoke
+            <span className="max-sm:hidden">Revoke</span>
           </Button>
           <Confirm
             open={confirm}
