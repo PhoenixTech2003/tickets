@@ -90,12 +90,7 @@ export function AppSidebar() {
                   <SidebarMenuItem key={event.id}>
                     <SidebarMenuButton asChild isActive={openEventId === event.id} className="h-auto py-1.5">
                       <Link href={href}>
-                        <span
-                          className={cn(
-                            "size-1.5 shrink-0 rounded-full",
-                            event.disabled ? "bg-muted-foreground/40" : "bg-primary",
-                          )}
-                        />
+                        <span className={cn("size-1.5 shrink-0 rounded-full bg-current", event.disabled && "opacity-35")} />
                         <span className="truncate">{event.name}</span>
                         <span className="ml-auto font-mono text-[0.65rem] text-muted-foreground">
                           {formatShortDate(event.starts_at)}
