@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { KeyRoundIcon } from "lucide-react";
 import { Brand } from "@/components/app/brand";
@@ -44,6 +45,9 @@ async function Pending() {
       </EmptyHeader>
       <EmptyContent>
         <PendingSignOut />
+        <Link href="/docs/getting-started" className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground">
+          How access works
+        </Link>
       </EmptyContent>
     </Empty>
   );

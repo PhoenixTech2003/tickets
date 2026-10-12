@@ -1,10 +1,13 @@
 import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
 
 // Changes every deploy; the service worker is registered with it so each
 // build gets a fresh worker and cache (see public/sw.js).
 const buildId = process.env.VERCEL_DEPLOYMENT_ID ?? process.env.VERCEL_GIT_COMMIT_SHA ?? Date.now().toString(36);
 
 const nextConfig: NextConfig = {
+  // Docs pages under /docs are written in MDX.
+  pageExtensions: ["ts", "tsx", "mdx"],
   cacheComponents: true,
   partialPrefetching: true,
   reactCompiler: true,
@@ -42,4 +45,5 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Plugins are named by string so Turbopack can pass them to the loader.
+export default createMDX({ options: { remarkPlugins: ["remark-gfm"] } })(nextConfig);

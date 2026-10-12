@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { LayoutDashboardIcon, LogOutIcon } from "lucide-react";
+import { LayoutDashboardIcon, CircleQuestionMarkIcon, LogOutIcon } from "lucide-react";
 import { Brand } from "@/components/app/brand";
 import { signOut } from "@/components/app/sign-out";
 import { SyncStatus } from "@/components/app/sync-status";
@@ -34,6 +34,16 @@ export function ScanShell({ children }: { children: ReactNode }) {
               <TooltipContent>Dashboard</TooltipContent>
             </Tooltip>
           )}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild variant="ghost" size="icon" aria-label="Docs">
+                <Link href="/docs/scanning">
+                  <CircleQuestionMarkIcon />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Docs</TooltipContent>
+          </Tooltip>
           <ThemeToggle />
           <Tooltip>
             <TooltipTrigger asChild>

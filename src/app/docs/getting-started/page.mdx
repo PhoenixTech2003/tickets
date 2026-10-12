@@ -1,0 +1,53 @@
+export const metadata = { title: "Signing in & roles" };
+
+# Signing in & roles
+
+Everyone signs in with Google. What you see next depends on the role you've been given.
+
+## Signing in
+
+1. Open Tickets and choose **Continue with Google**.
+2. Pick your Google account.
+3. You're taken straight to your home screen: the dashboard, the scanning page, or the access page.
+
+<Shot name="sign-in" alt="The sign-in page with a single Continue with Google button" />
+
+Tickets only receives your name, email address and profile picture from Google. It never sees your Google password.
+
+## "You need access"
+
+New accounts start with no access. If you see this page, your account is set up but isn't linked to any events yet.
+
+<Shot name="pending" alt="The You need access page showing the signed-in email address" />
+
+**What to do:** ask an admin, or the organizer of your event, to add the email shown on the page as an organizer or ticket scanner. Then refresh the page and you'll be taken in.
+
+## Roles
+
+| Role | Can |
+|---|---|
+| **Admin** | Everything: all events, changing anyone's role, inviting and removing organizers, scanning at any event. |
+| **Event organizer** | Create new events. Manage the events they created or were invited to. Scan at those events. |
+| **Invited organizer** (any role) | Manage the one event they were invited to. They can't create new events unless they also have the organizer role. |
+| **Ticket scanner** | Use the scanning page for the events they're assigned to. Nothing else. |
+| **User** | Nothing yet. Sees the "You need access" page. |
+
+<Note>
+Being **invited to an event** and having the **Event organizer role** are different things. An invitation gives
+access to one event. The role, which only admins grant, lets you create your own events.
+</Note>
+
+### How people get each role
+
+- **Ticket scanner:** an organizer adds them to an event as a scanner, and they're promoted automatically. When they're removed from their last event, they go back to being a plain user.
+- **Event organizer or admin:** an admin sets it on the [People & roles](/docs/people-and-roles) screen.
+- **Invited organizer:** an admin invites them from the event's **Organizers** tab.
+
+Role changes take effect immediately. The person may need to refresh the page.
+
+## Signing out
+
+- **Dashboard:** open the menu under your name at the bottom of the sidebar and choose **Sign out**.
+- **Scanning page:** use the sign-out button in the top right.
+
+Signing out also wipes the event data stored on that device, so a shared door tablet never leaks one person's events to the next.

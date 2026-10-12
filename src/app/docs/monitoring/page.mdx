@@ -1,0 +1,38 @@
+export const metadata = { title: "Overview & live activity" };
+
+# Overview & live activity
+
+Watch your door in real time. Everything on these tabs updates as scans come in. You never need to refresh.
+
+## Overview
+
+<Shot name="event-overview" alt="The Overview tab with headline figures and the admissions-by-hour chart" />
+
+The headline figures:
+
+| Figure | Means |
+|---|---|
+| **Tickets issued** | Every ticket generated for the event |
+| **Admitted** | Guests checked in, with the percentage of tickets issued |
+| **Still to arrive** | Issued minus admitted minus voided |
+| **Voided** | Tickets you've cancelled |
+| **Admitted, last hour** | A live count of recent arrivals |
+| **Ticket value** | Face value issued and admitted. Shown only when tickets have prices |
+
+Below the figures:
+
+- **Admissions by hour:** guests admitted in each hour, in your time zone.
+- **Arrivals by entrance:** admitted guests against tickets issued, for each door.
+- **Scan outcomes:** how many scans were admitted, rejected, redirected and so on.
+
+## Activity
+
+The **Activity** tab is a live feed of every scan at the event, newest first. New scans appear at the top of page 1 the moment they happen. Each row shows the code, the result, the entrance, who scanned it, and when.
+
+<Clip name="live-activity" alt="Scans appearing live in the Activity tab as a scanner checks guests in" />
+
+Use **Find a code** to see every scan of a particular ticket. This is useful when a guest says they haven't been in yet.
+
+### "Device said admitted"
+
+Occasionally you'll see a scan marked **device said admitted** with a final result of **Already used**. This happens when two devices were **offline at the same time** and both admitted the same ticket. When they reconnected, the first upload won and the second was overruled. See [Offline & sync](/docs/offline-and-sync#when-two-offline-devices-admit-the-same-ticket).

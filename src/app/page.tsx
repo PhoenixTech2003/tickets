@@ -22,7 +22,12 @@ export default function LandingPage() {
     <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 sm:px-6">
       <header className="flex items-center justify-between py-5">
         <Brand />
-        <ThemeToggle />
+        <div className="flex items-center gap-1.5">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/docs">Docs</Link>
+          </Button>
+          <ThemeToggle />
+        </div>
       </header>
 
       <main className="grid flex-1 items-center gap-14 py-12 lg:grid-cols-[1.15fr_1fr] lg:py-20">

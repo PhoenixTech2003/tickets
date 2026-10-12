@@ -1,0 +1,35 @@
+export const metadata = { title: "People & roles" };
+
+# People & roles
+
+Admins manage who can do what on the **People & roles** screen. Other roles don't see it.
+
+<Shot name="people-roles" alt="The People & roles table listing people with their role selector and join date" />
+
+## Finding people
+
+Everyone who has ever signed in is listed here, with their name, email, role and the date they joined. Use the search box to filter by name or email. Badges at the top count how many people have each role.
+
+This list doesn't update live. Choose **Refresh** to load people who signed up since you opened it.
+
+## Changing a role
+
+Pick a new role from the selector next to the person. It saves immediately.
+
+| Set to | When |
+|---|---|
+| **Admin** | They need full control. Keep this list short. |
+| **Event organizer** | They'll create and run their own events. |
+| **Ticket scanner** | Usually set automatically when an organizer adds them to an event. |
+| **User** | Remove all platform access. Event invitations still apply. |
+
+The change takes effect straight away. If the person has Tickets open, they may need to refresh.
+
+<Note>
+Most people never need their role changed here. Scanners are promoted automatically when added to an event, and
+event-level organizer access comes from an invitation on the event's **Organizers** tab.
+</Note>
+
+## The first admin
+
+Tickets doesn't have an admin until one is set up. Whoever runs the platform signs in once, then makes their account an admin from the server (see the setup guide in the repository). From then on, admins promote everyone else from this screen.

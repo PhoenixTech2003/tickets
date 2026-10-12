@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { CalendarRangeIcon, ChevronsUpDownIcon, LogOutIcon, RadioTowerIcon, ScanLineIcon, UsersIcon } from "lucide-react";
+import { CalendarRangeIcon, ChevronsUpDownIcon, CircleQuestionMarkIcon, LogOutIcon, RadioTowerIcon, ScanLineIcon, UsersIcon } from "lucide-react";
 import { Brand } from "@/components/app/brand";
 import { SyncStatus } from "@/components/app/sync-status";
 import { ThemeToggle } from "@/components/app/theme-toggle";
@@ -49,6 +49,7 @@ export function AppSidebar() {
     { href: "/scan", label: "Scan tickets", icon: ScanLineIcon },
     ...(viewer.role === "admin" ? [{ href: "/dashboard/users", label: "People & roles", icon: UsersIcon }] : []),
     { href: "/dashboard/sync", label: "Sync status", icon: RadioTowerIcon },
+    { href: "/docs", label: "Docs", icon: CircleQuestionMarkIcon },
   ];
 
   return (

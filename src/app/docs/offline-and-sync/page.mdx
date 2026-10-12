@@ -1,0 +1,71 @@
+export const metadata = { title: "Offline & sync" };
+
+# Offline & sync
+
+Tickets keeps a copy of your events on your device, so the dashboard and the scanner keep working without a connection.
+
+## How it works
+
+- When you sign in, your device downloads the events, entrances, tickets and scans you have access to.
+- Every screen reads from that local copy, which is why it's fast and updates live.
+- Changes from other devices arrive within about a second while you're online.
+- **Scans are saved on your device first**, then uploaded. The server re-checks every scan before it counts.
+
+## The sync pill
+
+The coloured pill in the sidebar (dashboard) or the top right (scanner) shows your connection at a glance. Tap it to open the full sync status page.
+
+| Pill | Means |
+|---|---|
+| 🟢 **Live** | Connected and up to date. |
+| 🟡 **Syncing** | Sending your scans or receiving changes. |
+| 🟡 **Connecting** | Reaching the server. |
+| 🔴 **Offline** | No network. You can keep working, and everything catches up when you reconnect. |
+| 🔴 **Sync error** | Connected, but something went wrong. Open the sync status page. |
+
+## Scanning offline
+
+<Clip name="scan-offline" alt="Scanning a ticket with the device offline: the Offline banner shows and the ticket is still admitted" />
+
+1. An **Offline** banner appears on the scanning page.
+2. Keep scanning as normal. Codes are checked against the tickets on your device.
+3. Your scans wait in a queue on the device.
+4. When the signal returns, the queue uploads automatically. You don't need to do anything.
+
+<Note tone="warning">
+**Don't sign out or clear your browser data while offline.** Unsent scans live on the device until they upload.
+</Note>
+
+### When two offline devices admit the same ticket
+
+If two scanners are both offline and the same code is typed on both, both devices may show **Admitted**. When they reconnect, **the first scan to upload wins**. The other is changed to **Already used** and syncs back to that device. Organizers see it in the Activity tab as **device said admitted**.
+
+Keeping devices online wherever possible avoids this.
+
+## The sync status page
+
+Open it by tapping the sync pill, or choose **Sync status** in the dashboard sidebar.
+
+<Shot name="sync-status" alt="The sync status page showing connection state, upload queue and data on this device" />
+
+It shows:
+
+- **Connection status** and when the device last synced
+- **Upload queue:** scans waiting to be sent. This should be 0 once you're back online.
+- **Current errors**, if any
+- **On this device:** how many events, tickets and scans are stored locally. These are what offline scanning checks against.
+- **Session log:** connection changes and errors since you opened the app
+
+### Reconnect and Re-download
+
+- **Reconnect** restarts the connection. Try this first if you're stuck on Connecting or Sync error.
+- **Re-download** wipes the local copy and downloads it again. Use it if data looks wrong.
+
+<Note tone="warning">
+Re-download warns you if the upload queue isn't empty. Clearing would **lose scans that haven't been sent**, so
+reconnect and wait for the queue to reach 0 first.
+</Note>
+
+## Loading the app with no signal
+
+Once you've opened Tickets on a device, the dashboard and scanning pages load even with no network, after a reload or a restart.

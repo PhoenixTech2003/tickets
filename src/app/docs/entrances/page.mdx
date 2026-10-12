@@ -1,0 +1,45 @@
+export const metadata = { title: "Entrances" };
+
+# Entrances
+
+Entrances are the doors guests use. They let you send each ticket holder to the right door and see arrivals per door.
+
+## Do you need entrances?
+
+No. With no entrances, the event is a **single-door event**: every ticket is valid at any door, and every scanner can admit anyone.
+
+Add entrances when you need to:
+
+- keep VIP, staff or general admission guests at separate doors
+- see how many guests arrived through each door
+- close one door without closing the event
+
+## Adding an entrance
+
+1. Open the event and go to the **Entrances** tab.
+2. Choose **Add entrance**.
+3. Enter a **Name**, such as *North Gate*. Use exactly what's on your signage. Guests at the wrong door are redirected by this name.
+4. Optionally add **Directions**, such as *Past the main car park, left of the stage*. Scanners read these to guests who are at the wrong door.
+
+<Shot name="entrances" alt="The Entrances tab with two entrances and their ticket, scanner and admitted counts" />
+
+Each entrance card shows how many **tickets** belong to it, how many **scanners** are stationed there, and how many guests have been **admitted** through it.
+
+## How entrances affect tickets
+
+When you generate a batch of tickets, you can tie it to an entrance. The entrance is printed on each ticket.
+
+| Ticket | Scanner | Result |
+|---|---|---|
+| Tied to North Gate | at North Gate | Admitted |
+| Tied to North Gate | at South Gate | **Wrong entrance:** "Please direct the guest to North Gate" plus your directions |
+| Not tied to any entrance | anywhere | Admitted |
+| Any | roaming (no entrance) | Admitted, unless the scanner has said which door they're at |
+
+## Closing an entrance
+
+Use the switch on an entrance to close it. Tickets tied to a closed entrance are rejected with **"Entrance closed"**. Everything else keeps working. Switch it back on to reopen.
+
+## Deleting an entrance
+
+Choose **Delete** from the entrance's menu. Its tickets and scanners aren't deleted. They become valid at **any** door. If you want to stop admissions there instead, close the entrance with the switch.

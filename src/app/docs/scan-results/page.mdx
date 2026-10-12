@@ -1,0 +1,35 @@
+export const metadata = { title: "Scan results explained" };
+
+# Scan results explained
+
+Every scan gives one of seven results. Green means let them in. Anything else means stop and read the card.
+
+| Result | Colour | What it means | What to do |
+|---|---|---|---|
+| **Admitted** | Green | Valid ticket, first use, right door. | Let them in. |
+| **Wrong entrance** | Amber | The ticket belongs to another door. | Send the guest to the entrance named on the card, using the directions shown. |
+| **Entrance closed** | Amber | The ticket's entrance has been closed by an organizer. | Ask an organizer where to send the guest. |
+| **Already used** | Red | The ticket was already admitted. The card shows the time and door. | Don't admit. If the guest disputes it, call an organizer. |
+| **Invalid code** | Red | No ticket with this code exists for this event. | Check the code for typos and try again. If it still fails, the ticket is for another event or isn't genuine. |
+| **Voided ticket** | Red | An organizer cancelled this ticket. | Don't admit. Refer the guest to an organizer. |
+| **Event closed** | Red | The event is disabled, so admissions are paused. | Stop scanning and check with an organizer. |
+
+## What they look like
+
+<Shot name="scan-admitted" alt="A green Admitted result card" caption="Admitted" />
+
+<Shot name="scan-wrong-entrance" alt="An amber Wrong entrance card telling the scanner to direct the guest to VIP Entrance" caption="Wrong entrance, with directions" />
+
+<Shot name="scan-already-used" alt="A red Already used card showing when and where the ticket was first admitted" caption="Already used, with when and where it was first admitted" />
+
+<Shot name="scan-invalid" alt="A red Invalid code card" caption="Invalid code" />
+
+## The order checks run in
+
+If a ticket has more than one problem, you see the first one in this list: **invalid → event closed → voided → wrong entrance → entrance closed → already used → admitted**.
+
+For example, a voided ticket at the wrong door shows **Voided ticket**, not **Wrong entrance**.
+
+## Results while offline
+
+Offline, your device checks codes against its own copy of the tickets, using exactly the same rules. In rare cases, two offline devices can both admit the same ticket. When they reconnect, the first upload wins and the other scan is changed to **Already used**. See [Offline & sync](/docs/offline-and-sync).

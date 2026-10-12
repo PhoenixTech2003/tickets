@@ -16,8 +16,11 @@
   },
   "dependencies": {
     "@journeyapps/wa-sqlite": "^2.0.7",
+    "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
     "@neondatabase/auth": "^0.5.0-beta",
     "@neondatabase/serverless": "^1.2.0",
+    "@next/mdx": "^16.4.0",
     "@powersync/drizzle-driver": "^0.8.0",
     "@powersync/react": "^2.0.2",
     "@powersync/web": "^2.4.2",
@@ -38,6 +41,7 @@
     "react": "19.3.0",
     "react-day-picker": "^10.0.2",
     "react-dom": "19.3.0",
+    "remark-gfm": "^4.0.1",
     "server-only": "^0.0.1",
     "shadcn": "^4.21.4",
     "sonner": "^2.0.8",
@@ -46,6 +50,7 @@
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
+    "@types/mdx": "^2.0.14",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

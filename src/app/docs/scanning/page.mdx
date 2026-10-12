@@ -1,0 +1,43 @@
+export const metadata = { title: "Scanning tickets" };
+
+# Scanning tickets
+
+The scanning page is built for a phone or tablet at the door: type the code, read the result, next guest.
+
+## Before doors open
+
+1. **Sign in once while you have signal.** Your device downloads the tickets for your events. A progress bar shows while this first sync runs.
+2. **Check your station** at the top of the page.
+   - If an organizer assigned you to an entrance, it's set for you and locked.
+   - If you're roaming, or you're an organizer or admin, choose the **event** and optionally the **entrance** you're standing at.
+3. **Check the sync pill** in the top right. Green **Live** means you're fully up to date.
+
+<Shot name="scanner-station" alt="The scanning page showing the station picker, code input and sync pill" />
+
+Your device remembers its station, so next time you can start scanning straight away.
+
+## Scanning a ticket
+
+1. Type the six characters from the ticket into **Enter ticket code**. Codes always mix letters and numbers, and letter case doesn't matter.
+2. The code is checked **as soon as the sixth character is typed**. There's no button to press.
+3. Read the result card. The device vibrates once for admitted and twice for rejected.
+4. The input clears and is ready for the next guest. Tap the result card to dismiss it early.
+
+<Clip name="scan-flow" alt="Typing a ticket code and seeing the green Admitted card, then the input clearing for the next guest" />
+
+See [Scan results explained](/docs/scan-results) for what every result means and what to tell the guest.
+
+## Your stats
+
+Under the scanner you'll see:
+
+- **Admitted by you:** how many guests you've let in at this event.
+- **Your recent scans:** the last few codes you checked and their results. Use it to double-check a guest who says they were just let in.
+
+## No signal?
+
+Keep scanning. An **Offline** banner appears and codes are checked against the copy on your device. Your scans upload automatically when the signal returns. Read [Offline & sync](/docs/offline-and-sync) for the details.
+
+## Organizers and admins
+
+You can scan too. Choose **Scan tickets** in the dashboard sidebar. Use the dashboard button in the scanner's header to go back.

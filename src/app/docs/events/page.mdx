@@ -1,0 +1,64 @@
+export const metadata = { title: "Events" };
+
+# Events
+
+An event holds everything else: entrances, tickets, scanners, organizers and every scan.
+
+## The events list
+
+**Events** in the sidebar lists every event you can manage. Use the filter to switch between **upcoming**, **past** and **all** events, or search by name or venue. Your events also appear in the sidebar under **Your events** for quick access.
+
+<Shot name="dashboard-events" alt="The events list on the dashboard with search and the upcoming filter" />
+
+The figures on each event update live as tickets are issued and scanned.
+
+## Creating an event
+
+Admins and anyone with the **Event organizer** role can create events.
+
+1. On the events list, choose **New event**.
+2. Fill in the details:
+   - **Name**, for example *Lake of Stars 2026*. This is printed on every ticket.
+   - **Venue**, also printed on every ticket.
+   - **Starts**, and optionally **Ends**.
+   - **Ticket currency**, used if you put prices on tickets. Prices are optional.
+   - **Notes** for organizers (optional).
+3. Save. You land on the new event's overview.
+
+<Clip name="create-event" alt="Filling in the new event form and saving it" />
+
+You become the event's owner and are added as its first organizer.
+
+## The event page
+
+Each event has six tabs:
+
+| Tab | Use it to |
+|---|---|
+| **Overview** | Watch arrivals: tickets issued, admitted, still to arrive, admissions per hour and per entrance. See [Overview & live activity](/docs/monitoring). |
+| **Entrances** | Set up the doors guests use. See [Entrances](/docs/entrances). |
+| **Tickets** | Generate, print, find, void and restore tickets. See [Tickets & printing](/docs/tickets). |
+| **Scanners** | Add the people who check guests in. See [Scanners & organizers](/docs/team). |
+| **Organizers** | See who manages the event. Admins invite and revoke organizers here. |
+| **Activity** | A live feed of every scan, newest first. |
+
+<Shot name="event-overview" alt="An event's page showing its header, tabs and overview figures" />
+
+## Editing an event
+
+Choose **Edit** at the top of the event page. Changes reach every organizer and scanner straight away. Tickets you've already printed still work, but they show the old details on paper.
+
+## Disabling an event
+
+From the **⋯** menu, choose **Disable event**. While an event is disabled, **every scan is rejected with "Event closed"**. Nothing is deleted. Choose **Enable event** to reopen admissions.
+
+Use it to pause the door, or to close an event once it's over.
+
+## Deleting an event
+
+Only the event's owner, or an admin, can delete it. From the **⋯** menu, choose **Delete event**.
+
+<Note tone="warning">
+Deleting removes the event's entrances, tickets, scanners and **scan history** permanently. Printed tickets stop
+working. If you just want to stop admissions, disable the event instead.
+</Note>

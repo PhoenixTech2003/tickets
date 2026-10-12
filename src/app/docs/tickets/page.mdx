@@ -1,0 +1,61 @@
+export const metadata = { title: "Tickets & printing" };
+
+# Tickets & printing
+
+Tickets are generated in batches and printed on A4. Each one carries a unique six-character code that scanners type in at the door.
+
+## Generating tickets
+
+1. Open the event and go to the **Tickets** tab.
+2. Choose **Generate tickets**.
+3. Set:
+   - **Quantity:** 1 to 1,000 tickets per batch.
+   - **Entrance** (optional): ties every ticket in the batch to one door. Leave it empty for tickets that work at any door.
+   - **Label** (optional): such as *VIP* or *Early bird*. It helps you tell batches apart.
+   - **Price per ticket** (optional): printed on each ticket in the event's currency. Leave it empty to print no price.
+4. Generate. The batch appears straight away.
+
+<Clip name="generate-tickets" alt="Generating a batch of 50 VIP tickets for the VIP Entrance" />
+
+Tickets are anonymous. They don't carry a guest's name.
+
+### About the codes
+
+- Six characters, always mixing **letters and numbers**, for example `7KQ4MX`.
+- Characters that look alike are never used: no 0/O, 1/I/L, 2/Z or 5/S. Codes can be read aloud or typed in a hurry without mistakes.
+- Every code is unique across the whole platform.
+
+## Printing
+
+Under **Print batches**, choose **Download every batch**, or use the download button on a single batch. You get a zip file with one PDF per batch.
+
+<Shot name="ticket-pdf" alt="A printed A4 sheet of ten tickets with cut lines" />
+
+- **A4, ten tickets per page** in two columns, with dashed cut lines and scissors marks.
+- Each ticket shows **ADMIT ONE**, the event name, date and time, venue, entrance (or *Any entrance*), price if set, the code, and a serial number.
+- **Voided tickets are left out** of the PDF.
+- Times print in the timezone of the device you download from.
+
+## Finding a ticket
+
+Type a code into **Find a code** on the Tickets tab. Filter by status: **All**, **Unused**, **Admitted** or **Voided**.
+
+<Shot name="tickets" alt="The Tickets tab showing batches, the ticket table and the status filter" />
+
+## Voiding and restoring
+
+Lost or cancelled ticket? Open its **⋯** menu and choose **Void ticket**. A voided ticket is rejected at the door with "Voided ticket". Choose **Restore ticket** to make it valid again.
+
+## Undoing an admission
+
+If a ticket was admitted by mistake, open its **⋯** menu and choose **Undo admission**. The ticket can be scanned again.
+
+## Deleting a batch
+
+Use the delete button on a batch to remove every ticket in it.
+
+<Note tone="warning">Deleting a batch can't be undone, and its printed tickets will stop working.</Note>
+
+## Ticket value
+
+If any batch has a price, the **Overview** tab also shows the total face value of tickets issued and admitted.

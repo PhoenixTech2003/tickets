@@ -1,0 +1,58 @@
+export const metadata = { title: "Troubleshooting" };
+
+# Troubleshooting
+
+Quick fixes for the problems people run into most.
+
+## Access
+
+### "I signed in but I see You need access"
+Your account isn't linked to anything yet. Ask an admin or your event's organizer to add your email, then refresh. See [Signing in & roles](/docs/getting-started).
+
+### "I was added as a scanner but the event isn't there"
+- Refresh the page.
+- Check the sync pill. If it says **Offline** or **Connecting**, the event downloads once you're connected.
+- Ask the organizer to check you aren't **disabled** on the Scanners tab.
+
+### "I can't find someone to add as a scanner"
+They need to sign in to Tickets once first. Send them the link, then try the search again.
+
+### "I can't create an event"
+Creating events needs the **Event organizer** role, which an admin grants. Being invited to someone else's event isn't enough.
+
+## At the door
+
+### Every scan says "Invalid code"
+- Check the **event** in your station picker. You may be scanning against the wrong event.
+- Codes never contain 0, O, 1, I, L, 2, Z, 5 or S. If you're typing one of those, it's misread: try the look-alike character.
+
+### Every scan says "Event closed"
+The event has been disabled. An organizer needs to choose **Enable event** from the event's **⋯** menu.
+
+### Lots of "Wrong entrance" results
+Check your station. You may be set to the wrong door. If you're locked to an entrance, ask an organizer to move you.
+
+### A guest says they haven't been in, but the scan says "Already used"
+The card shows when and where the ticket was first admitted. An organizer can search the code on the **Activity** tab to see who scanned it. If it was a mistake, they can choose **Undo admission** on the Tickets tab.
+
+## Sync
+
+### The pill says "Offline" but I have signal
+Tap the pill to open sync status and choose **Reconnect**. If that doesn't help, reload the page.
+
+### The pill says "Sync error"
+Open sync status to see the error. Try **Reconnect**. If it keeps happening, send a screenshot of the sync status page to your admin.
+
+### Scans are stuck in the upload queue
+Stay on the page with a connection. The queue drains automatically. **Don't sign out or use Re-download** until it reaches 0, or the unsent scans will be lost.
+
+### The data looks out of date or wrong
+Make sure the upload queue is at 0, then use **Re-download** on the sync status page.
+
+## Printing
+
+### Some tickets are missing from the PDF
+Voided tickets are left out on purpose. Restore them on the Tickets tab if they should print.
+
+### The time on the tickets is wrong
+Times print in the timezone of the device you download from. Download from a device set to the event's local time.

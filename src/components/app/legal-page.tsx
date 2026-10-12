@@ -27,6 +27,7 @@ export function LegalFooter() {
   return (
     <footer className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t py-6 text-sm text-muted-foreground">
       <span>© {site.name}</span>
+      <Link href="/docs" className="hover:text-foreground">Docs</Link>
       <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
       <Link href="/terms" className="hover:text-foreground">Terms</Link>
     </footer>

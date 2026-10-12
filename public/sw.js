@@ -25,6 +25,18 @@ const SHELLS = [
   "/dashboard/sync",
   "/scan",
   "/scan/sync",
+  "/docs",
+  "/docs/getting-started",
+  "/docs/events",
+  "/docs/entrances",
+  "/docs/tickets",
+  "/docs/team",
+  "/docs/monitoring",
+  "/docs/scanning",
+  "/docs/scan-results",
+  "/docs/offline-and-sync",
+  "/docs/people-and-roles",
+  "/docs/troubleshooting",
 ];
 const NETWORK_TIMEOUT_MS = 3000;
 
@@ -63,6 +75,8 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (request.method !== "GET" || url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api/") || url.pathname === "/sw.js") return;
+  // Ranged requests (docs clips) return 206s, which the Cache API can't store.
+  if (request.headers.has("range")) return;
 
   if (request.mode === "navigate") {
     event.respondWith(navigate(request, url));
