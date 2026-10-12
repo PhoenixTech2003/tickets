@@ -4,11 +4,11 @@ Every UI component is **shadcn/ui** (style `radix-nova`, in `src/components/ui`)
 
 Primitives used: Button, Card, Badge, Dialog, AlertDialog, DropdownMenu, Select, Switch, Tabs, Table, Input, InputGroup, InputOTP, Textarea, Field, Command, Avatar, Sidebar, Skeleton, Empty, Tooltip, Separator and Sonner.
 
-## Direction: "Stamp ink" (light) and "Powder" (dark)
+## Direction: "Inverse" (light) and "Powder" (dark)
 
-**Light mode** borrows from the door: paper tickets and the indigo-violet ink staff stamp hands with. Ink `#2b2d78` is the primary colour (buttons, the event date tabs, progress bars, charts). Content sits on a cool paper sheet (`#f2f3f7`) with paper cards (`#fdfdfb`), and text is ink-tinted (`#1b1c33`) rather than flat black.
+**Light mode** is a white sheet laid on a black frame. The sidebar is near-black (`#121211`) and the content area is white, with black type (`#1a1a19`) and black primary fills (`#161615`) for buttons, the event date tabs, progress bars and charts. Cards are white and separated by borders (`#e7e7e5`).
 
-The sidebar is the bold element: a deep night-ink frame (`#1f2150`) that the content sheet is laid on. The active nav item is a paper stub (`--sidebar-active`), and the brand mark turns into a paper stub with an ink tear line. Inside the sidebar, `[data-sidebar="sidebar"]` remaps the shared tokens (`--primary`, `--muted-foreground`, `--border`…) to the sidebar ones, so components placed there read correctly on the ink.
+The sidebar is the bold element. The active nav item is a white stub (`--sidebar-active`), and the brand mark turns into a white stub with a black tear line. Inside the sidebar, `[data-sidebar="sidebar"]` remaps the shared tokens (`--primary`, `--muted-foreground`, `--border`…) to the sidebar ones, so components placed there read correctly on the black.
 
 **Dark mode** keeps the graphite "Powder" finish: chalk on near-black (`#1d1d1c`), with a darker ash sidebar (`#131312`).
 
@@ -19,7 +19,7 @@ The scan verdicts keep their powdery sage, ochre and brick in both modes, becaus
 ## Tokens (`src/app/globals.css`)
 
 - Colours are hex values defined for both `:root` (light) and `.dark`.
-- `--primary` is stamp ink in light mode and chalk in dark mode. It fills buttons, the brand mark and the event date tabs.
+- `--primary` is black in light mode and chalk in dark mode. It fills buttons, the brand mark and the event date tabs.
 - `--success`, `--warning` and `--destructive` each have a `-foreground` pair, so a verdict can fill a surface with readable text on top.
 
 ## Typography

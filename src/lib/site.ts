@@ -14,5 +14,5 @@ export const site = {
   contactEmail: "phoenixtech2003@gmail.com",
   /** Effective date of the privacy policy and terms. */
   legalUpdated: "12 October 2026",
-  colors: { sheet: "#f2f3f7", chalk: "#f4f4f2", card: "#fafaf9", graphite: "#2b2b2a", ink: "#262625", muted: "#6b6b68", warning: "#d9a640" },
+  colors: { sheet: "#ffffff", chalk: "#f4f4f2", card: "#fafaf9", graphite: "#2b2b2a", ink: "#262625", muted: "#6b6b68", warning: "#d9a640" },
 };
