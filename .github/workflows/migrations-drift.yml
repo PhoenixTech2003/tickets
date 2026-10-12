@@ -1,0 +1,28 @@
+name: Migrations drift
+
+on:
+  pull_request:
+    paths:
+      - src/server/db/**
+      - drizzle.config.ts
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - run: bun install --frozen-lockfile
+      # generate never connects; the URL only satisfies drizzle.config.ts.
+      - run: bun run db:generate
+        env:
+          DATABASE_URL: postgresql://ci:ci@localhost/ci
+      - name: Fail if schema changes have no committed migration
+        run: |
+          if [ -n "$(git status --porcelain src/server/db/migrations)" ]; then
+            git status --porcelain src/server/db/migrations
+            echo "::error::schema/app.ts changed without a migration. Run 'bun run db:generate' and commit the result."
+            exit 1
+          fi

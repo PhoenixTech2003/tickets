@@ -1,6 +1,6 @@
 # 9. Setup & environment
 
-All variables go in **`.env.local`** at the project root, next to `package.json`. `.env.example` is the template. In production, set the same variables in your host's settings (e.g. Vercel → Project → Settings → Environment Variables). Every variable is **server-only**: none are `NEXT_PUBLIC_`, so nothing is exposed to the browser.
+All variables go in **`.env.local`** at the project root, next to `package.json`. `.env.example` is the template. In production, set the same variables in your host's settings (e.g. Vercel → Project → Settings → Environment Variables). Every variable is **server-only** except `NEXT_PUBLIC_SITE_URL`, the public origin used for canonical URLs, Open Graph images and the sitemap.
 
 | Variable | Where to get it | Used by |
 |---|---|---|
@@ -11,6 +11,7 @@ All variables go in **`.env.local`** at the project root, next to `package.json`
 | `POWERSYNC_URL` | PowerSync Dashboard → instance → **Connect** → instance URL | Token `aud` and the endpoint sent to clients |
 | `POWERSYNC_JWT_SECRET` | Generate: `openssl rand 32 \| basenc --base64url \| tr -d '='` | Signs PowerSync tokens (HS256) |
 | `POWERSYNC_JWT_KID` | Any id, e.g. `tickets` | JWT header `kid`. Must match PowerSync Client Auth. |
+| `NEXT_PUBLIC_SITE_URL` | Your production origin, e.g. `https://tickets.example.com` (falls back to `VERCEL_PROJECT_PRODUCTION_URL`, then localhost) | SEO metadata, `robots.txt`, sitemap |
 
 ## First run
 

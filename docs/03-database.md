@@ -38,6 +38,14 @@ bun run db:migrate    # applies to DATABASE_URL_UNPOOLED (falls back to DATABASE
 bun run db:studio
 ```
 
+### In CI
+
+- **`.github/workflows/deploy.yml`** owns production deploys. On every push to `main` (or *Run workflow*), it runs `db:migrate` and then `vercel deploy --prod`. If the migration fails, nothing deploys. Runs are queued, never parallel. Secrets live in the `production` GitHub environment: `DATABASE_URL_UNPOOLED`, `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`.
+- **`vercel.json`** turns off Vercel's own Git deploys for `main`, so the workflow is the only path to production. PR preview deploys are unchanged.
+- **`.github/workflows/migrations-drift.yml`** fails a PR if `db:generate` would produce a migration that is not committed.
+
+While a migration runs, the previous deploy is still live against the new schema. Adding tables and columns is safe. Dropping or renaming something takes two deploys: first stop using it, then remove it.
+
 | Migration | Contents |
 |---|---|
 | `0000_init.sql` | All tables, indexes, FKs, the `scan_result` enum |
