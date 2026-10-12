@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { PrinterIcon, ShieldCheckIcon, WifiOffIcon } from "lucide-react";
 import { Brand } from "@/components/app/brand";
+import { LegalFooter } from "@/components/app/legal-page";
 import { ShowcaseTicket, ShowcaseVerdict } from "@/components/app/showcase-ticket";
 import { ThemeToggle } from "@/components/app/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -51,6 +52,7 @@ export default function LandingPage() {
           </div>
         ))}
       </footer>
+      <LegalFooter />
     </div>
   );
 }

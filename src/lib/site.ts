@@ -10,5 +10,9 @@ export const site = {
         ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
         : "http://localhost:3000"),
   ),
+  /** Shown on the privacy and terms pages. TODO: replace with a real inbox before publishing. */
+  contactEmail: "support@example.com",
+  /** Effective date of the privacy policy and terms. */
+  legalUpdated: "12 October 2026",
   colors: { chalk: "#f4f4f2", card: "#fafaf9", graphite: "#2b2b2a", ink: "#262625", muted: "#6b6b68", warning: "#d9a640" },
 };

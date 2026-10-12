@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Brand } from "@/components/app/brand";
 import { ShowcaseTicket, ShowcaseVerdict } from "@/components/app/showcase-ticket";
 import { ThemeToggle } from "@/components/app/theme-toggle";
@@ -23,6 +24,17 @@ export default function SignInPage() {
             </p>
           </div>
           <GoogleSignInButton />
+          <p className="text-sm text-muted-foreground">
+            By continuing, you agree to our{" "}
+            <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">
+              Terms of service
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="underline underline-offset-4 hover:text-foreground">
+              Privacy policy
+            </Link>
+            .
+          </p>
           <p className="text-sm text-muted-foreground">
             New here? Signing in creates your account, and an admin or organizer then gives you access.
           </p>
