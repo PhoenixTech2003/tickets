@@ -1,17 +1,18 @@
 "use client";
 
 import { useQueryState } from "nuqs";
-import { SearchIcon } from "lucide-react";
+import { Loader2Icon, RefreshCwIcon, SearchIcon } from "lucide-react";
 import { useAction } from "@/components/app/use-action";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Paginator, useClampPage } from "@/components/app/paginator";
 import { StickyToolbar } from "@/components/app/sticky-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { changeUserRole } from "@/server/actions/users";
+import { changeUserRole, refreshUsers } from "@/server/actions/users";
 import { ROLE_LABELS, ROLES, type Role } from "@/lib/roles";
 import { formatDate, initials } from "@/lib/format";
 import { pageParser, searchParser } from "@/lib/search-params";
@@ -39,20 +40,23 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
             </Badge>
           ))}
         </div>
-        <InputGroup className="sm:max-w-72">
-          <InputGroupAddon>
-            <SearchIcon />
-          </InputGroupAddon>
-          <InputGroupInput
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setPage(null);
-            }}
-            placeholder="Search name or email"
-            aria-label="Search people"
-          />
-        </InputGroup>
+        <div className="flex items-center gap-2">
+          <InputGroup className="min-w-0 sm:w-72">
+            <InputGroupAddon>
+              <SearchIcon />
+            </InputGroupAddon>
+            <InputGroupInput
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(null);
+              }}
+              placeholder="Search name or email"
+              aria-label="Search people"
+            />
+          </InputGroup>
+          <RefreshButton />
+        </div>
       </StickyToolbar>
       <CardContent>
         <Table>
@@ -75,6 +79,17 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
         <Paginator page={page} pageSize={PAGE_SIZE} total={visible.length} onPageChange={setPage} noun="people" className="mt-4" />
       </CardContent>
     </Card>
+  );
+}
+
+function RefreshButton() {
+  // The list is cached for a few minutes; this fetches new sign-ups straight away.
+  const refresh = useAction(refreshUsers, { success: "People list refreshed" });
+  return (
+    <Button variant="outline" onClick={() => refresh.execute(undefined)} disabled={refresh.pending}>
+      {refresh.pending ? <Loader2Icon className="animate-spin" /> : <RefreshCwIcon />}
+      Refresh
+    </Button>
   );
 }
 

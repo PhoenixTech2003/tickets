@@ -13,7 +13,13 @@ export function GoogleSignInButton() {
     setPending(true);
     // The client can either return or throw an error (e.g. a 403 for an untrusted origin).
     const error = await authClient.signIn
-      .social({ provider: "google", callbackURL: `${window.location.origin}/continue` })
+      .social({
+        provider: "google",
+        // New accounts go through /continue too, which sends plain users to /pending.
+        callbackURL: `${window.location.origin}/continue`,
+        newUserCallbackURL: `${window.location.origin}/continue`,
+        errorCallbackURL: `${window.location.origin}/sign-in`,
+      })
       .then((res) => res.error, (err: unknown) => err as { message?: string });
     if (error) {
       toast.error(error.message || "Couldn't start Google sign-in.");

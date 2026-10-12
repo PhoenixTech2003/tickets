@@ -65,3 +65,11 @@ export async function changeUserRole(input: { userId: string; role: string }) {
     updateTag(USERS_TAG);
   });
 }
+
+/** Drops the cached people list so the page re-renders with fresh data. */
+export async function refreshUsers() {
+  return run(z.undefined(), undefined, async () => {
+    await requireAdmin();
+    updateTag(USERS_TAG);
+  });
+}

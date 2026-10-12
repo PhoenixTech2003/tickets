@@ -1,14 +1,14 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { HourglassIcon } from "lucide-react";
+import { KeyRoundIcon } from "lucide-react";
 import { Brand } from "@/components/app/brand";
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getViewer, homePathFor } from "@/server/auth/viewer";
 import { PendingSignOut } from "./sign-out-button";
 
-export const metadata: Metadata = { title: "Awaiting access" };
+export const metadata: Metadata = { title: "Access needed" };
 
 export default function PendingPage() {
   return (
@@ -33,12 +33,13 @@ async function Pending() {
     <Empty className="max-w-md rounded-xl border bg-card p-10">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <HourglassIcon />
+          <KeyRoundIcon />
         </EmptyMedia>
-        <EmptyTitle className="text-lg">You&apos;re on the list</EmptyTitle>
+        <EmptyTitle className="text-lg">You need access</EmptyTitle>
         <EmptyDescription>
-          Signed in as <span className="text-foreground">{viewer.email}</span>. An admin needs to make you an
-          organizer, or an organizer needs to add you as a ticket scanner. This page updates when you refresh.
+          Your account <span className="text-foreground">{viewer.email}</span> is set up, but it isn&apos;t linked to
+          any events yet. Contact an admin or the organizer of your event and ask them to add this email as an
+          organizer or ticket scanner. Refresh this page once they have.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>

@@ -7,7 +7,8 @@ import { ShowcaseTicket, ShowcaseVerdict } from "@/components/app/showcase-ticke
 import { ThemeToggle } from "@/components/app/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getViewer } from "@/server/auth/viewer";
+import { redirect } from "next/navigation";
+import { getViewer, homePathFor } from "@/server/auth/viewer";
 
 const FEATURES = [
   { icon: WifiOffIcon, title: "Scans offline", body: "Door devices verify codes from a synced local copy, then reconcile when the signal returns." },
@@ -59,6 +60,8 @@ export default function LandingPage() {
 
 async function SessionCta() {
   const viewer = await getViewer();
+  // Signed-in users with no access yet belong on the "ask for access" page, not here.
+  if (viewer && (await homePathFor(viewer)) === "/pending") redirect("/pending");
   return (
     <Button asChild size="lg" className="h-11 rounded-lg px-5 text-base">
       <Link href={viewer ? "/continue" : "/sign-in"}>

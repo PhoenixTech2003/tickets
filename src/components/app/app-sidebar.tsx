@@ -91,8 +91,11 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild isActive={openEventId === event.id} className="h-auto py-1.5">
                       <Link href={href}>
                         <span className={cn("size-1.5 shrink-0 rounded-full bg-current", event.disabled && "opacity-35")} />
-                        <span className="truncate">{event.name}</span>
-                        <span className="ml-auto font-mono text-[0.65rem] text-muted-foreground">
+                        {/* The name takes the ellipsis; the date never shrinks. */}
+                        <span className="min-w-0 flex-1 truncate" title={event.name}>
+                          {event.name}
+                        </span>
+                        <span className="shrink-0 font-mono text-[0.65rem] text-muted-foreground">
                           {formatShortDate(event.starts_at)}
                         </span>
                       </Link>

@@ -10,6 +10,7 @@
 | `/dashboard/**`, `/scan/**` | **Fully static** shells with a client gate (see [Auth](./04-auth-and-rbac.md)). Data comes from **PowerSync live queries**. Event pages take the id as `?id=` so one shell serves every event. | Realtime counters, activity feed, offline scanning. A server cache would only add staleness. |
 | `/dashboard/users` | `"use cache"` + `cacheTag("users")` + `cacheLife("minutes")` in `src/server/queries/users.ts` | The directory isn't synced to clients and changes rarely. Authorization runs **outside** the cached scope, so the cache can't be reached without it. |
 | Role changes, scanner add/remove | `updateTag("users")` in the Server Action | Read-your-own-writes: the admin sees the new role immediately |
+| **Refresh** button on People & roles | `refreshUsers` action: admin check, then `updateTag("users")` | New sign-ups appear without waiting for the cache to expire |
 | Session/role reads | React `cache()` per request, never `"use cache"` | Roles must apply immediately and the session reads cookies |
 
 Server Actions don't call `revalidatePath` for event data. PowerSync pushes the change to every open screen, including other people's.
