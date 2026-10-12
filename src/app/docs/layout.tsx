@@ -46,18 +46,19 @@ export default function DocsLayout({ children }: LayoutProps<"/docs">) {
       </header>
 
       <div className="flex-1 gap-12 py-8 md:grid md:grid-cols-[13rem_minmax(0,1fr)] lg:py-12">
-        <aside className="md:sticky md:top-24 md:max-h-[calc(100svh-7rem)] md:self-start md:overflow-y-auto">
-          <details className="group rounded-lg border md:hidden">
+        {/* Phones: the topic picker sticks under the header. md+: a sticky sidebar. */}
+        <aside className="sticky top-16 z-10 -mx-4 bg-background/95 px-4 py-2 backdrop-blur-xl sm:-mx-6 sm:px-6 md:top-24 md:mx-0 md:max-h-[calc(100svh-7rem)] md:self-start md:overflow-y-auto md:bg-transparent md:p-0 md:backdrop-blur-none">
+          <details className="group rounded-lg border bg-background md:hidden">
             <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-sm font-medium">
               <MenuIcon className="size-4" />
               All docs
             </summary>
-            <DocsNav className="border-t p-3" />
+            <DocsNav className="max-h-[60svh] overflow-y-auto border-t p-3" />
           </details>
           <DocsNav className="hidden md:block" />
         </aside>
 
-        <main className="mt-8 min-w-0 max-w-3xl md:mt-0">
+        <main className="mt-6 min-w-0 max-w-3xl md:mt-0">
           <article className={PROSE}>{children}</article>
           <DocsPager />
         </main>

@@ -11,7 +11,6 @@ import { StickyToolbar } from "@/components/app/sticky-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { changeUserRole, refreshUsers } from "@/server/actions/users";
 import { ROLE_LABELS, ROLES, type Role } from "@/lib/roles";
 import { formatDate, initials } from "@/lib/format";
@@ -59,20 +58,11 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
         </div>
       </StickyToolbar>
       <CardContent>
-        <Table className="table-fixed">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Person</TableHead>
-              <TableHead className="hidden w-36 md:table-cell">Joined</TableHead>
-              <TableHead className="w-32 sm:w-56">Role</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {pageRows.map((user) => (
-              <UserRow key={user.id} user={user} isSelf={user.id === currentUserId} />
-            ))}
-          </TableBody>
-        </Table>
+        <div className="divide-y">
+          {pageRows.map((user) => (
+            <UserRow key={user.id} user={user} isSelf={user.id === currentUserId} />
+          ))}
+        </div>
         {visible.length === 0 && (
           <p className="py-10 text-center text-sm text-muted-foreground">No one&apos;s name or email contains &ldquo;{query}&rdquo;.</p>
         )}
@@ -98,40 +88,40 @@ function UserRow({ user, isSelf }: { user: User; isSelf: boolean }) {
   const change = useAction(changeUserRole, { success: "Role updated" });
 
   return (
-    <TableRow>
-      <TableCell>
-        <div className="flex min-w-0 items-center gap-3">
-          <Avatar className="size-9">
-            {user.image && <AvatarImage src={user.image} alt="" />}
-            <AvatarFallback>{initials(user.name)}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0">
-            <p className="truncate font-medium">
-              {user.name} {isSelf && <span className="text-xs text-muted-foreground">(you)</span>}
-            </p>
-            <p className="truncate text-xs text-muted-foreground">{user.email}</p>
-          </div>
+    // Stacked on phones (person, then joined + role); one row from sm up.
+    <div className="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 py-3 sm:flex">
+      <div className="col-span-2 flex min-w-0 items-center gap-3 sm:flex-1">
+        <Avatar className="size-9">
+          {user.image && <AvatarImage src={user.image} alt="" />}
+          <AvatarFallback>{initials(user.name)}</AvatarFallback>
+        </Avatar>
+        <div className="min-w-0">
+          <p className="truncate font-medium">
+            {user.name} {isSelf && <span className="text-xs text-muted-foreground">(you)</span>}
+          </p>
+          <p className="truncate text-xs text-muted-foreground">{user.email}</p>
         </div>
-      </TableCell>
-      <TableCell className="hidden text-muted-foreground md:table-cell">{formatDate(user.createdAt)}</TableCell>
-      <TableCell>
-        <Select
-          value={user.role}
-          disabled={isSelf || change.pending}
-          onValueChange={(role) => change.execute({ userId: user.id, role })}
-        >
-          <SelectTrigger className="w-full">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {ROLES.map((role) => (
-              <SelectItem key={role} value={role}>
-                {ROLE_LABELS[role]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </TableCell>
-    </TableRow>
+      </div>
+      <p className="text-xs text-muted-foreground sm:w-36 sm:text-sm">
+        <span className="sm:sr-only">Joined </span>
+        {formatDate(user.createdAt)}
+      </p>
+      <Select
+        value={user.role}
+        disabled={isSelf || change.pending}
+        onValueChange={(role) => change.execute({ userId: user.id, role })}
+      >
+        <SelectTrigger className="w-40 sm:w-56" aria-label={`${user.name}'s role`}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {ROLES.map((role) => (
+            <SelectItem key={role} value={role}>
+              {ROLE_LABELS[role]}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

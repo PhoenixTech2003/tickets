@@ -18,6 +18,8 @@ export function DocsNav({ className }: { className?: string }) {
               key={href}
               href={href}
               aria-current={pathname === href ? "page" : undefined}
+              // Collapse the phone topic picker once a page is chosen.
+              onClick={(e) => e.currentTarget.closest("details")?.removeAttribute("open")}
               className="block rounded-md px-2 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:font-medium aria-[current=page]:text-foreground"
             >
               {title}
