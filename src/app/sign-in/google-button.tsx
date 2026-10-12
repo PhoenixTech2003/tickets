@@ -11,12 +11,12 @@ export function GoogleSignInButton() {
 
   async function signIn() {
     setPending(true);
-    const { error } = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: `${window.location.origin}/continue`,
-    });
+    // The client can either return or throw an error (e.g. a 403 for an untrusted origin).
+    const error = await authClient.signIn
+      .social({ provider: "google", callbackURL: `${window.location.origin}/continue` })
+      .then((res) => res.error, (err: unknown) => err as { message?: string });
     if (error) {
-      toast.error(error.message ?? "Couldn't start Google sign-in.");
+      toast.error(error.message || "Couldn't start Google sign-in.");
       setPending(false);
     }
   }
