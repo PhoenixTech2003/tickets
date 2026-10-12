@@ -28,3 +28,10 @@ export type EventWhen = (typeof EVENT_WHEN)[number];
 
 /** `?when=` on the events list. */
 export const eventWhenParser = parseAsStringLiteral(EVENT_WHEN).withDefault("upcoming");
+
+/** `?id=` on the event pages. The id lives in the query so one static shell serves every event. */
+export const eventIdParser = parseAsString.withDefault("");
+
+/** Event page URLs. */
+export const eventHref = (id: string) => `/dashboard/event?id=${encodeURIComponent(id)}`;
+export const editEventHref = (id: string) => `/dashboard/event/edit?id=${encodeURIComponent(id)}`;

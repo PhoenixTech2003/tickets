@@ -21,11 +21,13 @@ src/
 │   ├── continue/             # Post-login router: sends each role to its home
 │   ├── pending/              # "Awaiting access" for plain users
 │   ├── dashboard/            # Admin + organizer workspace (PowerSync-backed)
-│   │   ├── events/[eventId]/ # Event workspace (entrances, tickets, scanners…)
+│   │   ├── event/            # Event workspace, ?id=<event> (entrances, tickets, scanners…)
+│   │   ├── event/edit/       # Edit event, ?id=<event>
 │   │   └── users/            # Admin-only people & roles (Next cache)
 │   ├── scan/                 # The scanning page (all a ticket_scanner sees)
 │   └── api/
 │       ├── auth/[...path]/   # Neon Auth proxy
+│       ├── viewer/           # Signed-in user + allowed areas, for the client gate
 │       ├── powersync/token/  # Issues PowerSync JWTs
 │       ├── powersync/upload/ # Receives the PowerSync upload queue
 │       └── events/[eventId]/tickets/download/  # zip of A4 ticket PDFs

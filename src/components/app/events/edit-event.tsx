@@ -7,6 +7,7 @@ import { PageBody, PageHeader } from "@/components/app/page-header";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEvent } from "@/lib/powersync/queries";
+import { eventHref } from "@/lib/search-params";
 
 export function EditEvent({ eventId }: { eventId: string }) {
   const { event, isLoading } = useEvent(eventId);
@@ -20,7 +21,7 @@ export function EditEvent({ eventId }: { eventId: string }) {
               Events
             </Link>
             /
-            <Link href={`/dashboard/events/${eventId}`} className="truncate hover:text-foreground">
+            <Link href={eventHref(eventId)} className="truncate hover:text-foreground">
               {event?.name ?? "Event"}
             </Link>
           </span>

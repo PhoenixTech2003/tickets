@@ -77,6 +77,11 @@ Everyone signs in with Google. New sign-ups have no access until an admin grants
 - The verdict fills the screen in sage, ochre or brick and is announced to screen readers. The device vibrates once for admitted and twice for rejected. Verdicts dismiss themselves after 4 s (admitted) or 8 s (rejected), or on a tap.
 - The page also shows an offline banner, a live sync indicator, per-scanner counters and the recent scans.
 
+### Offline-first app
+
+- After signing in online once, a device can reload and move between the dashboard and scanner pages with no connection. Everything reads from the synced local copy.
+- Server-only actions (creating events, generating tickets, downloading PDFs, managing people) wait for the connection and retry automatically.
+
 ### Activity & sync
 
 - **Activity tab:** every scan for the event, live, searchable by ticket code and paged 50 at a time.

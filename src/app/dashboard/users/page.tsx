@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { AccessDeclined } from "@/components/app/access-declined";
+import { OfflineFallback } from "@/components/app/offline-fallback";
 import { PageBody, PageHeader } from "@/components/app/page-header";
 import { UsersTable } from "@/components/app/users/users-table";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,7 +23,13 @@ export default function UsersPage() {
         title="People & roles"
         description="Everyone who has signed in with Google. Roles are stored by the Better Auth admin plugin and take effect immediately."
       />
-      <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
+      <Suspense
+        fallback={
+          <OfflineFallback message="People and roles load from the server. They'll appear when this device is back online.">
+            <Skeleton className="h-96 rounded-xl" />
+          </OfflineFallback>
+        }
+      >
         <Users />
       </Suspense>
     </PageBody>

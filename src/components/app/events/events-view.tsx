@@ -16,7 +16,7 @@ import { useEvents, useEventsPage, useEventStats } from "@/lib/powersync/queries
 import { useSession } from "@/lib/powersync/provider";
 import type { EventRow } from "@/lib/powersync/schema";
 import { formatTime, percent, toDate } from "@/lib/format";
-import { EVENT_WHEN, eventWhenParser, pageParser, searchParser, type EventWhen } from "@/lib/search-params";
+import { EVENT_WHEN, eventHref, eventWhenParser, pageParser, searchParser, type EventWhen } from "@/lib/search-params";
 import { cn } from "@/lib/utils";
 import { useNow } from "@/hooks/use-now";
 
@@ -207,7 +207,7 @@ function EventItem({
 
   return (
     <Link
-      href={`/dashboard/events/${event.id}`}
+      href={eventHref(event.id)}
       className="group flex items-center gap-4 p-3 pr-5 transition-colors outline-none hover:bg-muted/60 focus-visible:bg-muted/60 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset sm:gap-5"
     >
       <div

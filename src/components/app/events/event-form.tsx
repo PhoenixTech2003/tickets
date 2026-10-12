@@ -16,16 +16,17 @@ import type { EventRow } from "@/lib/powersync/schema";
 import { toDate } from "@/lib/format";
 import { CURRENCIES, type Currency, DEFAULT_CURRENCY, isCurrency } from "@/lib/money";
 import { useNow } from "@/hooks/use-now";
+import { eventHref } from "@/lib/search-params";
 
 const currencyName = new Intl.DisplayNames(undefined, { type: "currency" });
 
 /** Full-page create (no `event`) or edit form. */
 export function EventForm({ event }: { event?: EventRow }) {
   const router = useRouter();
-  const backHref = event ? `/dashboard/events/${event.id}` : "/dashboard";
+  const backHref = event ? eventHref(event.id) : "/dashboard";
   const create = useAction(createEvent, {
     success: "Event created",
-    onSuccess: ({ id }) => router.push(`/dashboard/events/${id}`),
+    onSuccess: ({ id }) => router.push(eventHref(id)),
   });
   const update = useAction(updateEvent, { success: "Event updated", onSuccess: () => router.push(backHref) });
   const pending = create.pending || update.pending;

@@ -1,11 +1,13 @@
-import { EventDetail } from "@/components/app/events/event-detail";
+import type { Metadata } from "next";
+import { EventDetailRoute } from "@/components/app/events/event-routes";
 
 // Rendered client-side from PowerSync's local SQLite (see PowerSyncProvider),
 // so the server never renders this segment and Next can't validate it for
-// instant navigation. Navigations inside the app shell are instant anyway.
+// instant navigation. The page is static: the event id is read from `?id=`.
 export const instant = false;
 
-export default async function EventPage({ params }: PageProps<"/dashboard/events/[eventId]">) {
-  const { eventId } = await params;
-  return <EventDetail eventId={eventId} />;
+export const metadata: Metadata = { title: "Event" };
+
+export default function EventPage() {
+  return <EventDetailRoute />;
 }

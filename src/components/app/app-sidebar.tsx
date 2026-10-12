@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { CalendarRangeIcon, ChevronsUpDownIcon, LogOutIcon, RadioTowerIcon, ScanLineIcon, UsersIcon } from "lucide-react";
 import { Brand } from "@/components/app/brand";
 import { SyncStatus } from "@/components/app/sync-status";
@@ -35,10 +35,13 @@ import { useSession } from "@/lib/powersync/provider";
 import { ROLE_LABELS } from "@/lib/roles";
 import { formatShortDate, initials } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { eventHref } from "@/lib/search-params";
 
 export function AppSidebar() {
   const { viewer, disconnectAndClear } = useSession();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const openEventId = pathname.startsWith("/dashboard/event") ? searchParams.get("id") : null;
   const { data: events, isLoading } = useEvents();
 
   const nav = [
@@ -82,10 +85,10 @@ export function AppSidebar() {
             <SidebarMenu>
               {isLoading && [0, 1, 2].map((i) => <SidebarMenuSkeleton key={i} />)}
               {events.slice(0, 12).map((event) => {
-                const href = `/dashboard/events/${event.id}`;
+                const href = eventHref(event.id);
                 return (
                   <SidebarMenuItem key={event.id}>
-                    <SidebarMenuButton asChild isActive={pathname.startsWith(href)} className="h-auto py-1.5">
+                    <SidebarMenuButton asChild isActive={openEventId === event.id} className="h-auto py-1.5">
                       <Link href={href}>
                         <span
                           className={cn(

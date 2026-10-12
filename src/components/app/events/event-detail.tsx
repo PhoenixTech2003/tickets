@@ -31,7 +31,7 @@ import { deleteEvent, setEventDisabled } from "@/server/actions/events";
 import { useEvent, useOrganizers } from "@/lib/powersync/queries";
 import { useSession } from "@/lib/powersync/provider";
 import { formatDate, formatTime } from "@/lib/format";
-import { EVENT_TABS, eventTabParser, pageParser, searchParser, ticketStatusParser, type EventTab } from "@/lib/search-params";
+import { EVENT_TABS, editEventHref, eventTabParser, pageParser, searchParser, ticketStatusParser, type EventTab } from "@/lib/search-params";
 
 const TAB_LABELS: Record<EventTab, string> = {
   overview: "Overview",
@@ -159,7 +159,7 @@ export function EventDetail({ eventId }: { eventId: string }) {
             actions={
               <>
                 <Button asChild variant="outline">
-                  <Link href={`/dashboard/events/${event.id}/edit`}>
+                  <Link href={editEventHref(event.id)}>
                     <PencilIcon data-icon="inline-start" />
                     Edit
                   </Link>

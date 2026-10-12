@@ -9,11 +9,13 @@ import { SyncStatus } from "@/components/app/sync-status";
 import { ThemeToggle } from "@/components/app/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useAccess } from "@/components/app/viewer-gate";
 import { useSession } from "@/lib/powersync/provider";
 
 /** Minimal chrome for door devices: brand, sync state, theme, sign out. */
-export function ScanShell({ canManage, children }: { canManage: boolean; children: ReactNode }) {
+export function ScanShell({ children }: { children: ReactNode }) {
   const { viewer, disconnectAndClear } = useSession();
+  const canManage = useAccess().dashboard;
   return (
     <div className="flex flex-1 flex-col">
       <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-background/70 px-4 py-3 backdrop-blur-xl sm:px-6">
