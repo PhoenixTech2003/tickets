@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2Icon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { authClient } from "@/lib/auth-client";
 import { loginEmail } from "@/lib/usernames";
 
@@ -14,6 +15,7 @@ import { loginEmail } from "@/lib/usernames";
 export function PasswordSignInForm() {
   const router = useRouter();
   const [pending, setPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function signIn(form: FormData) {
     setPending(true);
@@ -41,7 +43,25 @@ export function PasswordSignInForm() {
         </Field>
         <Field>
           <FieldLabel htmlFor="sign-in-password">Password</FieldLabel>
-          <Input id="sign-in-password" name="password" type="password" required autoComplete="current-password" />
+          <InputGroup>
+            <InputGroupInput
+              id="sign-in-password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              required
+              autoComplete="current-password"
+            />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton
+                size="icon-xs"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
+                onClick={() => setShowPassword((v) => !v)}
+              >
+                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
         </Field>
         <Button type="submit" size="lg" className="h-11 rounded-lg text-base" disabled={pending}>
           {pending && <Loader2Icon className="animate-spin" />}
