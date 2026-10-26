@@ -21,7 +21,7 @@ export default function UsersPage() {
       <PageHeader
         eyebrow="Admin"
         title="People & roles"
-        description="Everyone who has signed in with Google. Roles are stored by the Better Auth admin plugin and take effect immediately."
+        description="Everyone who has signed in with Google or been given a username account. Roles are stored by the Better Auth admin plugin and take effect immediately."
       />
       <Suspense
         fallback={

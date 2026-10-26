@@ -28,6 +28,7 @@ import type { UserHit } from "@/server/actions/users";
 import { useEntrances, useScanners } from "@/lib/powersync/queries";
 import type { EntranceRow, ScannerRow } from "@/lib/powersync/schema";
 import { initials } from "@/lib/format";
+import { loginLabel } from "@/lib/usernames";
 
 export function ScannersPanel({ eventId }: { eventId: string }) {
   const { data: scanners } = useScanners(eventId);
@@ -86,7 +87,7 @@ function ScannerRowView({ scanner, entrances }: { scanner: ScannerRow; entrances
             <span className="truncate">{scanner.user_name}</span>
             {disabled && <Badge variant="outline">Disabled</Badge>}
           </p>
-          <p className="truncate text-xs text-muted-foreground">{scanner.user_email}</p>
+          <p className="truncate text-xs text-muted-foreground">{loginLabel(scanner.user_email)}</p>
         </div>
       </div>
       <div className="flex items-center gap-1 sm:order-last">

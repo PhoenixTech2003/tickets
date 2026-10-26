@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Brand } from "@/components/app/brand";
 import { ShowcaseTicket, ShowcaseVerdict } from "@/components/app/showcase-ticket";
 import { ThemeToggle } from "@/components/app/theme-toggle";
+import { FieldSeparator } from "@/components/ui/field";
 import { GoogleSignInButton } from "./google-button";
+import { PasswordSignInForm } from "./password-form";
 
 export const metadata: Metadata = { title: "Sign in" };
 
@@ -19,11 +21,13 @@ export default function SignInPage() {
           <div className="space-y-2">
             <h1 className="text-3xl font-bold">Sign in</h1>
             <p className="text-muted-foreground">
-              Use your Google account. What you can do here, whether admin, organizer or scanner, is set by your
-              team.
+              Use your Google account, or the username and password an admin gave you. What you can do here,
+              whether admin, organizer or scanner, is set by your team.
             </p>
           </div>
           <GoogleSignInButton />
+          <FieldSeparator>or with a username</FieldSeparator>
+          <PasswordSignInForm />
           <p className="text-sm text-muted-foreground">
             By continuing, you agree to our{" "}
             <Link href="/terms" className="underline underline-offset-4 hover:text-foreground">

@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, type ReactNode } from "react";
 import { useQueryState } from "nuqs";
-import { Loader2Icon, RefreshCwIcon, SearchIcon } from "lucide-react";
+import { DicesIcon, KeyRoundIcon, Loader2Icon, PlusIcon, RefreshCwIcon, SearchIcon } from "lucide-react";
 import { useAction } from "@/components/app/use-action";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -9,12 +10,25 @@ import { Button } from "@/components/ui/button";
 import { Paginator, useClampPage } from "@/components/app/paginator";
 import { StickyToolbar } from "@/components/app/sticky-toolbar";
 import { Card, CardContent } from "@/components/ui/card";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { changeUserRole, refreshUsers } from "@/server/actions/users";
+import { changeUserRole, createAccount, refreshUsers, resetPassword } from "@/server/actions/users";
 import { ROLE_LABELS, ROLES, type Role } from "@/lib/roles";
 import { formatDate, initials } from "@/lib/format";
 import { pageParser, searchParser } from "@/lib/search-params";
+import { usernameOf } from "@/lib/usernames";
 
 const PAGE_SIZE = 25;
 
@@ -55,6 +69,7 @@ export function UsersTable({ users, currentUserId }: { users: User[]; currentUse
             />
           </InputGroup>
           <RefreshButton />
+          <CreateAccountDialog />
         </div>
       </StickyToolbar>
       <CardContent>
@@ -86,6 +101,7 @@ function RefreshButton() {
 function UserRow({ user, isSelf }: { user: User; isSelf: boolean }) {
   // The action calls updateTag, which re-renders this page with fresh data.
   const change = useAction(changeUserRole, { success: "Role updated" });
+  const username = usernameOf(user.email);
 
   return (
     // Stacked on phones (person, then joined + role); one row from sm up.
@@ -99,29 +115,190 @@ function UserRow({ user, isSelf }: { user: User; isSelf: boolean }) {
           <p className="truncate font-medium">
             {user.name} {isSelf && <span className="text-xs text-muted-foreground">(you)</span>}
           </p>
-          <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+          <p className="truncate text-xs text-muted-foreground">{username ? `Username: ${username}` : user.email}</p>
         </div>
       </div>
       <p className="text-xs text-muted-foreground sm:w-36 sm:text-sm">
         <span className="sm:sr-only">Joined </span>
         {formatDate(user.createdAt)}
       </p>
-      <Select
-        value={user.role}
-        disabled={isSelf || change.pending}
-        onValueChange={(role) => change.execute({ userId: user.id, role })}
-      >
-        <SelectTrigger className="w-40 sm:w-56" aria-label={`${user.name}'s role`}>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {ROLES.map((role) => (
-            <SelectItem key={role} value={role}>
-              {ROLE_LABELS[role]}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex items-center justify-end gap-1">
+        <Select
+          value={user.role}
+          disabled={isSelf || change.pending}
+          onValueChange={(role) => change.execute({ userId: user.id, role })}
+        >
+          <SelectTrigger className="w-40 sm:w-56" aria-label={`${user.name}'s role`}>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {ROLES.map((role) => (
+              <SelectItem key={role} value={role}>
+                {ROLE_LABELS[role]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {username && <ResetPasswordDialog userId={user.id} name={user.name} />}
+      </div>
     </div>
   );
+}
+
+function CreateAccountDialog() {
+  const [open, setOpen] = useState(false);
+  const create = useAction(createAccount, { success: "Account created" });
+
+  async function onSubmit(form: FormData) {
+    const ok = await create.execute({
+      name: String(form.get("name") ?? ""),
+      username: String(form.get("username") ?? ""),
+      password: String(form.get("password") ?? ""),
+      role: String(form.get("role") ?? "user"),
+    });
+    if (ok) setOpen(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>
+          <PlusIcon data-icon="inline-start" />
+          <span className="max-sm:sr-only">New account</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <form action={onSubmit} className="space-y-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">New account</DialogTitle>
+            <DialogDescription>
+              For people without Google. Hand them the username and password; they sign in with those on the sign-in
+              page.
+            </DialogDescription>
+          </DialogHeader>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="account-name">Name</FieldLabel>
+              <Input id="account-name" name="name" required placeholder="Chikondi Banda" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="account-username">Username</FieldLabel>
+              <Input
+                id="account-username"
+                name="username"
+                required
+                autoComplete="off"
+                autoCapitalize="none"
+                pattern="[a-zA-Z0-9._\-]{3,32}"
+                placeholder="chikondi.b"
+              />
+              <FieldDescription>3–32 letters, numbers, dots, dashes or underscores.</FieldDescription>
+            </Field>
+            <PasswordField id="account-password" />
+            <Field>
+              <FieldLabel htmlFor="account-role">Role</FieldLabel>
+              <Select name="role" defaultValue="ticket_scanner">
+                <SelectTrigger id="account-role" className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {ROLES.map((role) => (
+                    <SelectItem key={role} value={role}>
+                      {ROLE_LABELS[role]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+          </FieldGroup>
+          <DialogActions pending={create.pending}>Create account</DialogActions>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ResetPasswordDialog({ userId, name }: { userId: string; name: string }) {
+  const [open, setOpen] = useState(false);
+  const reset = useAction(resetPassword, { success: `Password reset for ${name}` });
+
+  async function onSubmit(form: FormData) {
+    const ok = await reset.execute({ userId, password: String(form.get("password") ?? "") });
+    if (ok) setOpen(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label={`Reset ${name}'s password`}>
+          <KeyRoundIcon />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <form action={onSubmit} className="space-y-6">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold">Reset password</DialogTitle>
+            <DialogDescription>
+              {name} is signed out on every device and needs the new password to sign back in.
+            </DialogDescription>
+          </DialogHeader>
+          <PasswordField id="reset-password" />
+          <DialogActions pending={reset.pending}>Reset password</DialogActions>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+/** Shown in plain text so the admin can read it out or copy it to hand over. */
+function PasswordField({ id }: { id: string }) {
+  const [value, setValue] = useState("");
+  return (
+    <Field>
+      <FieldLabel htmlFor={id}>Password</FieldLabel>
+      <InputGroup>
+        <InputGroupInput
+          id={id}
+          name="password"
+          required
+          minLength={8}
+          autoComplete="new-password"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          className="font-mono"
+        />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton onClick={() => setValue(generatePassword())}>
+            <DicesIcon />
+            Generate
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+      <FieldDescription>At least 8 characters.</FieldDescription>
+    </Field>
+  );
+}
+
+function DialogActions({ pending, children }: { pending: boolean; children: ReactNode }) {
+  return (
+    <DialogFooter>
+      <DialogClose asChild>
+        <Button type="button" variant="ghost">
+          Cancel
+        </Button>
+      </DialogClose>
+      <Button type="submit" disabled={pending}>
+        {pending && <Loader2Icon className="animate-spin" />}
+        {children}
+      </Button>
+    </DialogFooter>
+  );
+}
+
+// No look-alike characters (0/O, 1/l/I), so it's easy to read out or copy by hand.
+const PASSWORD_ALPHABET = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789";
+
+function generatePassword(length = 12) {
+  const bytes = crypto.getRandomValues(new Uint8Array(length));
+  return Array.from(bytes, (b) => PASSWORD_ALPHABET[b % PASSWORD_ALPHABET.length]).join("");
 }

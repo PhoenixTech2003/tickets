@@ -36,6 +36,7 @@ import { ROLE_LABELS } from "@/lib/roles";
 import { formatShortDate, initials } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { eventHref } from "@/lib/search-params";
+import { loginLabel } from "@/lib/usernames";
 
 export function AppSidebar() {
   const { viewer, disconnectAndClear } = useSession();
@@ -133,7 +134,7 @@ export function AppSidebar() {
               <DropdownMenuContent side="top" align="start" className="w-(--radix-dropdown-menu-trigger-width) min-w-56">
                 <DropdownMenuLabel className="font-normal">
                   <p className="font-medium">{viewer.name}</p>
-                  <p className="text-xs text-muted-foreground">{viewer.email}</p>
+                  <p className="text-xs text-muted-foreground">{loginLabel(viewer.email)}</p>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={() => signOut(disconnectAndClear)}>

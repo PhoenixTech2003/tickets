@@ -8,6 +8,7 @@ import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTi
 import { Skeleton } from "@/components/ui/skeleton";
 import { getViewer, homePathFor } from "@/server/auth/viewer";
 import { PendingSignOut } from "./sign-out-button";
+import { loginLabel } from "@/lib/usernames";
 
 export const metadata: Metadata = { title: "Access needed" };
 
@@ -38,7 +39,7 @@ async function Pending() {
         </EmptyMedia>
         <EmptyTitle className="text-lg">You need access</EmptyTitle>
         <EmptyDescription>
-          Your account <span className="text-foreground">{viewer.email}</span> is set up, but it isn&apos;t linked to
+          Your account <span className="text-foreground">{loginLabel(viewer.email)}</span> is set up, but it isn&apos;t linked to
           any events yet. Contact an admin or the organizer of your event and ask them to add this email as an
           organizer or ticket scanner. Refresh this page once they have.
         </EmptyDescription>

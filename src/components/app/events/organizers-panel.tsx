@@ -25,6 +25,7 @@ import { useOrganizers } from "@/lib/powersync/queries";
 import { useSession } from "@/lib/powersync/provider";
 import type { OrganizerRow } from "@/lib/powersync/schema";
 import { formatRelative, initials } from "@/lib/format";
+import { loginLabel } from "@/lib/usernames";
 
 export function OrganizersPanel({ eventId }: { eventId: string }) {
   const { viewer } = useSession();
@@ -72,7 +73,7 @@ function OrganizerItem({ organizer, canRevoke }: { organizer: OrganizerRow; canR
           )}
         </p>
         <p className="truncate text-xs text-muted-foreground">
-          {organizer.user_email} · {owner ? "created" : "invited"} {formatRelative(organizer.created_at)}
+          {loginLabel(organizer.user_email)} · {owner ? "created" : "invited"} {formatRelative(organizer.created_at)}
         </p>
       </div>
       {canRevoke && !owner && (
@@ -130,7 +131,7 @@ function InviteDialog({ eventId, existing }: { eventId: string; existing: string
           </DialogClose>
           <Button onClick={submit} disabled={!user || invite.pending}>
             {invite.pending && <Loader2Icon className="animate-spin" />}
-            {user ? `Invite ${user.email}` : "Invite"}
+            {user ? `Invite ${loginLabel(user.email)}` : "Invite"}
           </Button>
         </DialogFooter>
       </DialogContent>

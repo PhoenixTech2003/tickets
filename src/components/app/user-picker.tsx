@@ -8,6 +8,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { searchUsers, type UserHit } from "@/server/actions/users";
 import { ROLE_LABELS, type Role } from "@/lib/roles";
 import { initials } from "@/lib/format";
+import { loginLabel } from "@/lib/usernames";
 
 /**
  * Searches everyone who has signed up (Neon Auth users) via a server action,
@@ -53,7 +54,7 @@ export function UserPicker({
       <CommandInput
         value={query}
         onValueChange={setQuery}
-        placeholder={field === "email" ? "Search by email…" : "Search by name or email…"}
+        placeholder={field === "email" ? "Search by email or username…" : "Search by name, email or username…"}
       />
       <CommandList>
         {loading && (
@@ -74,7 +75,7 @@ export function UserPicker({
                 </Avatar>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-medium">{user.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                  <p className="truncate text-xs text-muted-foreground">{loginLabel(user.email)}</p>
                 </div>
                 <Badge variant="outline" className="text-[0.65rem]">
                   {ROLE_LABELS[user.role as Role]}
